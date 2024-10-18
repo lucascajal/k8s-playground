@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloworld-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: helloworld-app
+  template:
+    metadata:
+      labels:
+        app: helloworld-app
+    spec:
+      imagePullSecrets:
+      - name: container-registry-credentials # Secret containing the GitLab registry credentials
+      containers:
+      - name: helloworld-app
+        # image: hashicorp/http-echo:0.2.3 # This is the original image
+        image: registry.gitlab.com/lucascajal1/k8s/http-echo:1.0.0 # This is the image from my GitLab registry
+        args:
+        - "-text=Hello World! This is a helloworld Kubernetes with kind App"
