@@ -30,6 +30,22 @@ destroy: ## Destroys Kind Cluster
 	$(info $(DATE) - destroying cluster)
 	kind delete cluster --name my-cluster
 
+.PHONY: dashboard
+dashboard: ## Set up Kubernetes Dashboard
+	$(info $(DATE) - creating Kubernetes Dashboard)
+
+	helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+	helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
+
+	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - creating dashboard admin user ServiceAccount"
+	kubectl apply -f dashboard-adminuser.yaml
+
+.PHONY: open_dashboard
+open_dashboard: ## Set up Kubernetes Dashboard
+	$(info $(DATE) - opening Kubernetes Dashboard)
+	kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443 & 
+	open https://localhost:8443
+
 #################### APP DEPLOYMENT ####################
 .PHONY: deploy
 deploy: ## Deploy app
