@@ -1,0 +1,22 @@
+# Include resources
+resources:
+  - deployment.yaml
+  - app.yaml
+
+# Generate secret
+secretGenerator:
+- name: tunnel-credentials
+  files:
+  - credentials.json
+generatorOptions: # see https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/#generatoroptions
+  disableNameSuffixHash: true # disable hash suffix
+  labels:
+    type: generated
+  annotations:
+    note: generated
+
+# Generate config
+configMapGenerator:
+- name: cloudflared
+  files:
+  - config.yaml
