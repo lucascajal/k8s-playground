@@ -46,6 +46,27 @@ open_dashboard: ## Set up Kubernetes Dashboard
 	kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443 & 
 	open https://localhost:8443
 
+#################### TUNNEL CLOUDFLARED ####################
+# Prerequisites: install cloudflared, run `cloudflared tunnel login`
+
+.PHONY: tunnel
+tunnel: ## Set up Cloudflared Tunnel
+	$(info $(DATE) - creating cloudflared tunnel)
+	@cert_path=$$(cloudflared tunnel create example-tunnel | sed -n 's/^Tunnel credentials written to \(.*\.json\).*/\1/p') && \
+		mv $$cert_path cloudflared/credentials.json
+	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - adding DNS record"
+	@cloudflared tunnel route dns --overwrite-dns example-tunnel k8s
+	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - deploying cloudflared tunnel"
+	@kubectl apply -k cloudflared
+
+.PHONY: tunnel_delete
+tunnel_delete: ## Set up Kubernetes Dashboard
+	$(info $(DATE) - deleting cloudflared tunnel)
+	@kubectl delete -k cloudflared --ignore-not-found
+	cloudflared tunnel cleanup example-tunnel
+	cloudflared tunnel delete example-tunnel
+	rm -f cloudflared/credentials.json
+
 #################### APP DEPLOYMENT ####################
 .PHONY: deploy
 deploy: ## Deploy app
