@@ -1,7 +1,6 @@
 # Include resources
 resources:
   - deployment.yaml
-  - app.yaml
 
 # Generate secret
 secretGenerator:

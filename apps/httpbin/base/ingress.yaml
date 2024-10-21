@@ -1,16 +1,16 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: helloworld-ingress
+  name: httpbin-ingress
 spec:
   rules:
-  - host: helloworld.lucascajal.com
+  - host: httpbin.lucascajal.com
     http:
       paths:
       - pathType: Prefix
         path: /
         backend:
           service:
-            name: helloworld-service
+            name: web-service
             port:
-              number: 5678
+              number: 80
