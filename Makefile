@@ -35,9 +35,8 @@ destroy: ## Destroys Kind Cluster
 	@$(MAKE) -f $(THIS_FILE) tunnel_delete
 	kind delete cluster --name my-cluster
 
-#################### TUNNEL CLOUDFLARED ####################
+# TUNNEL CLOUDFLARED
 # Prerequisites: install cloudflared, run `cloudflared tunnel login`
-
 .PHONY: tunnel
 tunnel: ## Set up Cloudflared Tunnel
 	$(info $(DATE) - creating cloudflared tunnel)
@@ -60,18 +59,22 @@ tunnel_delete: ## Delete Cloudflared Tunnel
 .PHONY: dashboard
 dashboard: ## Set up Kubernetes Dashboard
 	$(info $(DATE) - creating Kubernetes Dashboard)
-
 	helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
-	helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
+	helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard \
+		--create-namespace --namespace kubernetes-dashboard \
+		--set=app.ingress.enabled=true \
+		--set=app.ingress.hosts[0]=dashboard.lucascajal.com \
+		--set=app.ingress.useDefaultIngressClass=true \
+		--set=app.ingress.tls.enabled=false
+		# -f dashboard/dashboard-values.yaml
 
 	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - creating dashboard admin user ServiceAccount"
-	kubectl apply -f dashboard-adminuser.yaml
+	kubectl apply -f dashboard/adminuser.yaml
 
-.PHONY: dashboard_open
-dashboard_open: ## Open Kubernetes Dashboard
-	$(info $(DATE) - opening Kubernetes Dashboard)
-	kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443 & 
-	open https://localhost:8443
+.PHONY: dashboard_delete
+dashboard_delete: ## Delete Kubernetes Dashboard
+	$(info $(DATE) - deleting Kubernetes Dashboard)
+	helm delete kubernetes-dashboard --namespace kubernetes-dashboard
 
 #################### APP DEPLOYMENT ####################
 .PHONY: deploy
