@@ -1,0 +1,50 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: auth-ingress
+  annotations:
+    # For ingress-nginx (open source nginx ingress controller) only.
+    nginx.ingress.kubernetes.io/proxy-body-size: "2000m"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "32k"
+    # # For nginx-ingress (NGINX plus ingress controller) only.
+    # nginx.org/client-max-body-size: "2000m"
+    # nginx.org/proxy-buffer-size: "32k"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "dashboard.lucascajal.com" # change to your domain
+    http:
+      paths:
+      - path: /oauth2
+        pathType: Prefix
+        backend:
+          service:
+            name: oidc-proxy
+            port:
+              number: 4180
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dashboard-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
+    nginx.ingress.kubernetes.io/auth-response-headers: "Authorization"
+    # nginx.ingress.kubernetes.io/configuration-snippet: |
+    #   proxy_set_header Authorization $http_authorization;
+spec:
+  rules:
+  - host: "dashboard.lucascajal.com"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: kubernetes-dashboard-kong-proxy
+            port:
+              number: 443
