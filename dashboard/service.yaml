@@ -1,0 +1,12 @@
+# Proxy service to allow referencing the oauth2-proxy svc, located in namespace oauth2-proxy-ns
+# from the kubernetes-dashboard namespace
+apiVersion: v1
+kind: Service
+metadata:
+  name: oidc-proxy
+  namespace: kubernetes-dashboard
+spec:
+  type: ExternalName
+  externalName: oidc-proxy.oauth2-proxy.svc.cluster.local
+  ports:
+    - port: 4180
