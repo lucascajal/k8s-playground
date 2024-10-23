@@ -9,6 +9,16 @@ nodes:
       nodeRegistration:
         kubeletExtraArgs:
           node-labels: "ingress-ready=true"
+    - |
+      kind: ClusterConfiguration
+      apiServer:
+        extraArgs:
+          # OIDC related flags
+          oidc-issuer-url: "https://lucascajal.eu.auth0.com/"
+          oidc-client-id: "SGFmPlbvl2yTpuEhacs8KtSN7ziL2meX"
+          # oidc-username-claim: "email"  # Use "sub" or "email" depending on your provider
+          # oidc-groups-claim: "groups" # Optional, if your provider supports groups
+          # oidc-ca-file: "/etc/kubernetes/pki/ca.crt" # Optional, if needed
   extraPortMappings:
     - containerPort: 80
       hostPort: 80

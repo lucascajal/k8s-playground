@@ -18,22 +18,26 @@ help: ## Display this help
 .PHONY: cluster
 cluster: ## Creates Kind Cluster. Following https://kind.sigs.k8s.io/docs/user/ingress/
 	$(info $(DATE) - creating cluster)
-	kind create cluster --name my-cluster --config=cluster-config.yaml
+	@kind create cluster --name my-cluster --config=cluster-config.yaml
 
 	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - setting up ingress controler"
-	kubectl apply -k ingress-nginx/
+	@kubectl apply -k ingress-nginx/
+	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - waiting for ingress controler to be up..."
+	@sleep 10
+	@kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=controller -n ingress-nginx --timeout=120s
 
 	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - setting up namespaces for each environment"
-	kubectl apply -k namespaces/
+	@kubectl apply -k namespaces/
 
 	@$(MAKE) -f $(THIS_FILE) tunnel
-	# @$(MAKE) -f $(THIS_FILE) dashboard
+	@$(MAKE) -f $(THIS_FILE) oidc
+	@$(MAKE) -f $(THIS_FILE) dashboard
 
 .PHONY: destroy
 destroy: ## Destroys Kind Cluster
 	$(info $(DATE) - destroying cluster)
 	@$(MAKE) -f $(THIS_FILE) tunnel_delete
-	kind delete cluster --name my-cluster
+	@kind delete cluster --name my-cluster
 
 # TUNNEL CLOUDFLARED
 # Prerequisites: install cloudflared, run `cloudflared tunnel login`
@@ -50,31 +54,41 @@ tunnel: ## Set up Cloudflared Tunnel
 .PHONY: tunnel_delete
 tunnel_delete: ## Delete Cloudflared Tunnel
 	$(info $(DATE) - deleting cloudflared tunnel)
+	@cloudflared tunnel cleanup k8s-tunnel
+	@sleep 15
+	@cloudflared tunnel delete k8s-tunnel
 	@kubectl delete -k cloudflared --ignore-not-found
-	cloudflared tunnel cleanup k8s-tunnel
-	cloudflared tunnel delete k8s-tunnel
-	rm -f cloudflared/credentials.json
+	@rm -f cloudflared/credentials.json
+
+#################### OIDC (OAuth2-proxy) ####################
+.PHONY: oidc
+oidc: ## Set up OAuth2-poxy
+	$(info $(DATE) - creating OAuth2-proxy)
+	@kubectl apply -k oauth2-proxy
 
 #################### DASHBOARD ####################
 .PHONY: dashboard
 dashboard: ## Set up Kubernetes Dashboard
 	$(info $(DATE) - creating Kubernetes Dashboard)
-	helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
-	helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard \
-		--create-namespace --namespace kubernetes-dashboard \
-		--set=app.ingress.enabled=true \
-		--set=app.ingress.hosts[0]=dashboard.lucascajal.com \
-		--set=app.ingress.useDefaultIngressClass=true \
-		--set=app.ingress.tls.enabled=false
-		# -f dashboard/dashboard-values.yaml
+	@helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+	@helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard \
+		--create-namespace --namespace kubernetes-dashboard
+		# Uncomment the following lines to expose the dashboard without OIDC. See https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md
+		# --set=app.ingress.enabled=true \
+		# --set=app.ingress.hosts[0]=dashboard-unsecured.lucascajal.com \
+		# --set=app.ingress.useDefaultIngressClass=true \
+		# --set=app.ingress.tls.enabled=false
+	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - waiting for dashboard to be up..."
+	@sleep 10
+	@kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=app -n kubernetes-dashboard --timeout=120s
 
-	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - creating dashboard admin user ServiceAccount"
-	kubectl apply -f dashboard/adminuser.yaml
+	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - adding dashboard ingress & users"
+	@kubectl apply -k dashboard
 
 .PHONY: dashboard_delete
 dashboard_delete: ## Delete Kubernetes Dashboard
 	$(info $(DATE) - deleting Kubernetes Dashboard)
-	helm delete kubernetes-dashboard --namespace kubernetes-dashboard
+	@helm delete kubernetes-dashboard --namespace kubernetes-dashboard
 
 #################### APP DEPLOYMENT ####################
 .PHONY: deploy
@@ -86,7 +100,6 @@ deploy: ## Deploy app
 delete: ## Delete app
 	$(info $(DATE) - deleting app '$(app)')
 	kubectl delete -k ./apps/$(app)/base
-
 
 #################### APP DEPLOYMENT  WITH OVERLAYS (ENVs) ####################
 .PHONY: deploy_overlay
