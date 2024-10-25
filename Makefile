@@ -54,11 +54,11 @@ tunnel: ## Set up Cloudflared Tunnel
 .PHONY: tunnel_delete
 tunnel_delete: ## Delete Cloudflared Tunnel
 	$(info $(DATE) - deleting cloudflared tunnel)
-	@cloudflared tunnel cleanup k8s-tunnel
-	@sleep 15
-	@cloudflared tunnel delete k8s-tunnel
 	@kubectl delete -k cloudflared --ignore-not-found
 	@rm -f cloudflared/credentials.json
+	@cloudflared tunnel cleanup k8s-tunnel
+	@sleep 5
+	@cloudflared tunnel delete k8s-tunnel
 
 #################### OIDC (OAuth2-proxy) ####################
 .PHONY: oidc
