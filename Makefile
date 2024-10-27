@@ -24,7 +24,7 @@ cluster: ## Creates Kind Cluster. Following https://kind.sigs.k8s.io/docs/user/i
 	@kubectl apply -k ingress-nginx/
 	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - waiting for ingress controler to be up..."
 	@sleep 10
-	@kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=controller -n ingress-nginx --timeout=120s
+	@kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=controller -n ingress-nginx --timeout=600s
 
 	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - setting up namespaces for each environment"
 	@kubectl apply -k namespaces/
