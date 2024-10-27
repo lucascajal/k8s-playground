@@ -11,7 +11,7 @@ Install these CLI tools:
 - [Helm](https://helm.sh/docs/intro/install/)
 - cloudflared - following https://developers.cloudflare.com/cloudflare-one/tutorials/many-cfd-one-tunnel/
 
-Register in an OIDC provider (we used Auth0) and register an app. Put your app's CLIENT_ID and CLIENT_SECRET in the [oidc-secret.env](oauth2-proxy/oidc-secret.env) file, and generate the value for COOKIE_SECRET with
+Register in an OIDC provider (we used Auth0) and register an app. Copy the [oidc-secret-example.env](oauth2-proxy/oidc-secret-example.env) file as `oidc-secret.env` in the same directory, put your app's `CLIENT_ID` and `CLIENT_SECRET` in it, and generate the value for `COOKIE_SECRET` with
 ```bash
 dd if=/dev/urandom bs=32 count=1 2>/dev/null | base64 | tr -d -- '\n' | tr -- '+/' '-_' ; echo
 ```
