@@ -22,6 +22,7 @@ spec:
         - --http-address=0.0.0.0:4180
         - --set-authorization-header=true # Set auth header
         - --pass-authorization-header=true # Pass auth header to upstream
+        - --cookie-expire=0 # expire cookies on browser close
 
         # See complete list of options at https://oauth2-proxy.github.io/oauth2-proxy/configuration/overview/#config-options
         # - --scope=openid groups profile email
@@ -30,7 +31,6 @@ spec:
         # - --code-challenge-method=S256
         # - --pass-access-token=true
         # - --set-xauthrequest=true
-        # - --cookie-expire=0 # expire cookies on browser close
         # - --cookie-name=__Host-
         # - --pass-user-headers=true
         # - --pass-host-header=true
