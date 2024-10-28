@@ -20,15 +20,10 @@ cluster: ## Creates Kind Cluster. Following https://kind.sigs.k8s.io/docs/user/i
 	$(info $(DATE) - creating cluster)
 	@kind create cluster --name my-cluster --config=cluster-config.yaml
 
-	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - setting up ingress controler"
-	@kubectl apply -k ingress-nginx/
-	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - waiting for ingress controler to be up..."
-	@sleep 10
-	@kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=controller -n ingress-nginx --timeout=600s
-
 	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - setting up namespaces for each environment"
 	@kubectl apply -k namespaces/
 
+	@$(MAKE) -f $(THIS_FILE) ingress
 	@$(MAKE) -f $(THIS_FILE) tunnel
 	@$(MAKE) -f $(THIS_FILE) oidc
 	@$(MAKE) -f $(THIS_FILE) dashboard
@@ -65,6 +60,15 @@ tunnel_delete: ## Delete Cloudflared Tunnel
 oidc: ## Set up OAuth2-poxy
 	$(info $(DATE) - creating OAuth2-proxy)
 	@kubectl apply -k oauth2-proxy
+
+#################### Ingress (NGINX) ####################
+.PHONY: ingress
+ingress: ## Set up OAuth2-poxy
+	$(info $(DATE) - setting up ingress controler)
+	@kubectl apply -k ingress-nginx/
+	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - waiting for ingress controler to be up..."
+	@sleep 10
+	@kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=controller -n ingress-nginx --timeout=600s
 
 #################### DASHBOARD ####################
 .PHONY: dashboard
