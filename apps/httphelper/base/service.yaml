@@ -1,0 +1,22 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: httphelper-service
+spec:
+  selector:
+    app: httphelper-app
+  ports:
+  # Default port used by the image
+  - port: 8080
+---
+# Proxy service to allow referencing the oauth2-proxy svc, located in namespace oauth2-proxy-ns
+# from the kubernetes-dashboard namespace
+apiVersion: v1
+kind: Service
+metadata:
+  name: oidc-proxy
+spec:
+  type: ExternalName
+  externalName: oidc-proxy.oauth2-proxy.svc.cluster.local
+  ports:
+    - port: 4180
