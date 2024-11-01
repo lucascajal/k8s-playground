@@ -1,0 +1,12 @@
+# Generate secret
+secretGenerator:
+- name: container-registry-credentials
+  type: kubernetes.io/dockerconfigjson
+  files:
+  - .dockerconfigjson
+generatorOptions: # see https://kubernetes.io/docs/tasks/manage-kubernetes-objects/kustomization/#generatoroptions
+  disableNameSuffixHash: true # disable hash suffix
+  labels:
+    type: generated
+  annotations:
+    note: generated
