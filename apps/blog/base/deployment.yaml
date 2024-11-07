@@ -30,7 +30,10 @@ spec:
             cd /git-repo
             while true; do
               echo "Checking for updates..."
-              git pull origin main # Pull the latest changes
+              git fetch --depth 1 --all             # Fetch just the latest commit from the remote
+              git reset --hard origin/main          # Resets to match remote, discarding local changes
+              git reflog expire --expire=now --all  # Remove reflog history to reduce size
+              git gc --prune=now                    # Garbage collect and remove unnecessary objects
               sleep 60; # Check for updates every 60 seconds
             done
         volumeMounts:
