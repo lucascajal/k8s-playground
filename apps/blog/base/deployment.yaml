@@ -21,6 +21,21 @@ spec:
         - name: git-repo
           mountPath: /app # Mount the cloned repo to this path
           subPath: app
+      - name: git-sync # Container to pull the latest changes from the repo
+        image: alpine/git
+        command:
+          - /bin/sh
+          - -c
+          - |
+            cd /git-repo
+            while true; do
+              echo "Checking for updates..."
+              git pull origin main # Pull the latest changes
+              sleep 60; # Check for updates every 60 seconds
+            done
+        volumeMounts:
+        - name: git-repo
+          mountPath: /git-repo
       initContainers: # Init container to clone the repo to the emptyDir volume
       - name: git-clone
         image: alpine/git
