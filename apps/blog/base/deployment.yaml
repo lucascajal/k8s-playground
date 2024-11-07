@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blog-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: blog-app
+  template:
+    metadata:
+      labels:
+        app: blog-app
+    spec:
+      imagePullSecrets:
+      - name: container-registry-credentials # Secret containing the GitLab registry credentials
+      containers:
+      - name: blog-app
+        image: registry.gitlab.com/lucascajal1/k8s/blog:latest
+        volumeMounts:
+        - name: git-repo
+          mountPath: /app # Mount the cloned repo to this path
+          subPath: app
+      initContainers: # Init container to clone the repo to the emptyDir volume
+      - name: git-clone
+        image: alpine/git
+        command:
+          - /bin/sh
+          - -c
+          - |
+            git clone https://github.com/lucascajal/blog.git /git-repo
+        volumeMounts:
+        - name: git-repo
+          mountPath: /git-repo
+      volumes:
+      - name: git-repo
+        emptyDir: {} # emptyDir volume to share data between containers
+

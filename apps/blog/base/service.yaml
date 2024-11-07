@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: blog-service
+spec:
+  selector:
+    app: blog-app
+  ports:
+  # Default port used by the image
+  - port: 4000
