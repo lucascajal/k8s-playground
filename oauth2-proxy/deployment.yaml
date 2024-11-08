@@ -22,7 +22,7 @@ spec:
         - --http-address=0.0.0.0:4180
         - --set-authorization-header=true # Set auth header
         - --pass-authorization-header=true # Pass auth header to upstream
-        - --cookie-expire=0 # expire cookies on browser close
+        - --cookie-expire=0h30m0s # set to 0 to expire cookies on browser close
 
         # See complete list of options at https://oauth2-proxy.github.io/oauth2-proxy/configuration/overview/#config-options
         # - --scope=openid groups profile email
