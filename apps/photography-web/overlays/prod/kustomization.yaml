@@ -1,0 +1,5 @@
+namespace: prod
+namePrefix: prod-
+nameSuffix: "-001"
+resources:
+  - ../../base

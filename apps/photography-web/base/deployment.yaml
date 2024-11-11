@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: photography-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: photography-web
+  template:
+    metadata:
+      labels:
+        app: photography-web
+    spec:
+      imagePullSecrets:
+      - name: container-registry-credentials # Secret containing the GitLab registry credentials
+      containers:
+      - name: photography-web
+        image: registry.gitlab.com/lucascajal1/k8s/photography-web:2.1.0
+        ports:
+        - containerPort: 5000

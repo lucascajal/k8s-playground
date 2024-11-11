@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: photography-web-service
+spec:
+  selector:
+    app: photography-web
+  ports:
+  # Default port used by the image
+  - port: 5000
