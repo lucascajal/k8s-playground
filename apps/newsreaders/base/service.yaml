@@ -1,0 +1,32 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: newsreaders-frontend-service
+spec:
+  selector:
+    app: newsreaders-frontend
+  ports:
+  # Default port used by the image
+  - port: 5000
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: newsreaders-backend-service
+spec:
+  selector:
+    app: newsreaders-backend
+  ports:
+  # Default port used by the image
+  - port: 80
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: newsreaders-redis-service
+spec:
+  selector:
+    app: newsreaders-redis
+  ports:
+  # Default port used by the image
+  - port: 6379
