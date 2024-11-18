@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lucascajal-photography-migration
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lucascajal-photography-migration
+  template:
+    metadata:
+      labels:
+        app: lucascajal-photography-migration
+    spec:
+      imagePullSecrets:
+      - name: container-registry-credentials # Secret containing the GitLab registry credentials
+      containers:
+      - name: lucascajal-photography-migration
+        image: registry.gitlab.com/lucascajal1/k8s/http-migration:latest
+        env:
+        - name: REDIRECT_HOST
+          value: "https://photography.lucascajal.com"
+        ports:
+        - containerPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lucascajal-vanguardia-migration
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lucascajal-vanguardia-migration
+  template:
+    metadata:
+      labels:
+        app: lucascajal-vanguardia-migration
+    spec:
+      imagePullSecrets:
+      - name: container-registry-credentials # Secret containing the GitLab registry credentials
+      containers:
+      - name: lucascajal-vanguardia-migration
+        image: registry.gitlab.com/lucascajal1/k8s/http-migration:latest
+        env:
+        - name: REDIRECT_HOST
+          value: "https://newsreader.lucascajal.com/vanguardia"
+        ports:
+        - containerPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lucascajal-ara-migration
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lucascajal-ara-migration
+  template:
+    metadata:
+      labels:
+        app: lucascajal-ara-migration
+    spec:
+      imagePullSecrets:
+      - name: container-registry-credentials # Secret containing the GitLab registry credentials
+      containers:
+      - name: lucascajal-ara-migration
+        image: registry.gitlab.com/lucascajal1/k8s/http-migration:latest
+        env:
+        - name: REDIRECT_HOST
+          value: "https://newsreader.lucascajal.com/ara"
+        ports:
+        - containerPort: 80

@@ -1,0 +1,32 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: lucascajal-photography-migration-service
+spec:
+  selector:
+    app: lucascajal-photography-migration
+  ports:
+  # Default port used by the image
+  - port: 80
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: lucascajal-vanguardia-migration-service
+spec:
+  selector:
+    app: lucascajal-vanguardia-migration
+  ports:
+  # Default port used by the image
+  - port: 80
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: lucascajal-ara-migration-service
+spec:
+  selector:
+    app: lucascajal-ara-migration
+  ports:
+  # Default port used by the image
+  - port: 80
