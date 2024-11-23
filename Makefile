@@ -27,7 +27,11 @@ cluster: ## Creates Kind Cluster. Following https://kind.sigs.k8s.io/docs/user/i
 	@$(MAKE) -f $(THIS_FILE) tunnel
 	@$(MAKE) -f $(THIS_FILE) oidc
 	@$(MAKE) -f $(THIS_FILE) dashboard
+
 	@$(MAKE) -f $(THIS_FILE) blog
+	@$(MAKE) -f $(THIS_FILE) photography
+	@$(MAKE) -f $(THIS_FILE) newsreaders
+	@$(MAKE) -f $(THIS_FILE) migrationhelper
 
 .PHONY: destroy
 destroy: ## Destroys Kind Cluster
@@ -121,3 +125,18 @@ delete_overlay: ## Delete app with overlays
 blog: ## Deploy personal blog
 	$(info $(DATE) - Deploying blog)
 	kubectl apply  -k ./apps/blog/overlays/prod/
+
+.PHONY: photography
+photography: ## Deploy photography portfolio
+	$(info $(DATE) - Deploying photography-web)
+	kubectl apply  -k ./apps/photography-web/overlays/prod/
+
+.PHONY: newsreaders
+newsreaders: ## Deploy newsreaders app
+	$(info $(DATE) - Deploying newsreaders)
+	kubectl apply  -k ./apps/newsreaders/base/
+
+.PHONY: migrationhelper
+migrationhelper: ## Deploy migration-helper app
+	$(info $(DATE) - Deploying migration-helper)
+	kubectl apply  -k ./apps/migration-helper/
