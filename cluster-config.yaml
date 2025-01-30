@@ -12,6 +12,10 @@ nodes:
     - |
       kind: ClusterConfiguration
       apiServer:
+        certSANs:
+          - "raspberrypi5.local"
+          - "127.0.0.1"
+          - "0.0.0.0"
         extraArgs:
           # OIDC related flags
           oidc-issuer-url: "https://lucascajal.eu.auth0.com/"
@@ -20,9 +24,13 @@ nodes:
           # oidc-username-claim: "email"  # Use "sub" or "email" depending on your provider
           # oidc-ca-file: "/etc/kubernetes/pki/ca.crt" # Optional, if needed
   extraPortMappings:
-    - containerPort: 80
-      hostPort: 80
+    - containerPort: 6443
+      hostPort: 44593
       protocol: TCP
-    - containerPort: 443
-      hostPort: 443
-      protocol: TCP
+    # Commented out as all the services will be routed through cloudflared tunnel
+    # - containerPort: 80
+    #   hostPort: 80
+    #   protocol: TCP
+    # - containerPort: 443
+    #   hostPort: 443
+    #   protocol: TCP
