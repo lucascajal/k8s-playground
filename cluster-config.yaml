@@ -13,6 +13,8 @@ nodes:
       kind: ClusterConfiguration
       apiServer:
         certSANs:
+          - "lucascajal.com"
+          - "k8s.lucascajal.com"
           - "raspberrypi5.local"
           - "127.0.0.1"
           - "0.0.0.0"
@@ -34,3 +36,7 @@ nodes:
     # - containerPort: 443
     #   hostPort: 443
     #   protocol: TCP
+
+# Add worker nodes below
+- role: worker
+- role: worker
