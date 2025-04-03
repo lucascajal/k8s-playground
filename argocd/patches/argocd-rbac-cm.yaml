@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-rbac-cm
+data:
+  policy.csv: |
+    # let members with group someProjectGroup handle apps in someProject
+    # this can also be defined in the UI in the group-definition to avoid doing it there in the configmap
+    #p, someProjectGroup, applications, *, someProject/*, allow
+    p, k8s-argocd-project-default, applications, *, default/*, allow
+    # let the group membership argocd-admins from OIDC become role:admin - needs to go into the configmap
+    g, k8s-argocd-admins, role:admin
+    g, k8s-argocd-readers, role:readonly
+  policy.default: role:readonly
+  # essential to get argo to use groups for RBAC:
+  scopes: '[http://lucascajal.com/groups, email]'

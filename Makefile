@@ -26,6 +26,7 @@ cluster: ## Creates Kind Cluster. Following https://kind.sigs.k8s.io/docs/user/i
 	@$(MAKE) -f $(THIS_FILE) ingress
 	@$(MAKE) -f $(THIS_FILE) tunnel
 	@$(MAKE) -f $(THIS_FILE) oidc
+	@$(MAKE) -f $(THIS_FILE) argocd
 	@$(MAKE) -f $(THIS_FILE) dashboard
 
 	@$(MAKE) -f $(THIS_FILE) blog
@@ -99,6 +100,20 @@ dashboard: ## Set up Kubernetes Dashboard
 dashboard_delete: ## Delete Kubernetes Dashboard
 	$(info $(DATE) - deleting Kubernetes Dashboard)
 	@helm delete kubernetes-dashboard --namespace kubernetes-dashboard
+
+#################### ARGO CD ####################
+.PHONY: argocd
+argocd: ## Set up ArgoCD
+	$(info $(DATE) - setting up ArgoCD)
+	@kubectl apply -k argocd/
+	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - waiting for argocd-server to be up..."
+	@sleep 10
+	@kubectl wait --for=condition=Ready pods -l app.kubernetes.io/name=argocd-server -n argocd --timeout=120s
+
+.PHONY: argocd_delete
+argocd_delete: ## Delete ArgoCD
+	$(info $(DATE) - deleting up ArgoCD)
+	@kubectl delete -k argocd/
 
 #################### APP DEPLOYMENT ####################
 .PHONY: deploy

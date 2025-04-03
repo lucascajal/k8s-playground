@@ -15,6 +15,8 @@ Register in an OIDC provider (we used Auth0) and register an app. Copy the [oidc
 ```bash
 dd if=/dev/urandom bs=32 count=1 2>/dev/null | base64 | tr -d -- '\n' | tr -- '+/' '-_' ; echo
 ```
+To also use Auth0 for the ArgoCD UI, copy the the file [`argocd-cm-example.yaml`](./argocd/patches/argocd-cm-example.yaml) to a new file `argocd-cm.yaml` in the same directory and populate it with your Auth0 app's values.
+
 Finally, create a Cloudflare account and register a domain. Log in to cloudflare by executing the command below and following the instructions:
 ```bash
 sudo cloudflared tunnel login
