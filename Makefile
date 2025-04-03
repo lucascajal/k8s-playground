@@ -26,13 +26,8 @@ cluster: ## Creates Kind Cluster. Following https://kind.sigs.k8s.io/docs/user/i
 	@$(MAKE) -f $(THIS_FILE) ingress
 	@$(MAKE) -f $(THIS_FILE) tunnel
 	@$(MAKE) -f $(THIS_FILE) oidc
-	@$(MAKE) -f $(THIS_FILE) argocd
 	@$(MAKE) -f $(THIS_FILE) dashboard
-
-	@$(MAKE) -f $(THIS_FILE) blog
-	@$(MAKE) -f $(THIS_FILE) photography
-	@$(MAKE) -f $(THIS_FILE) newsreaders
-	@$(MAKE) -f $(THIS_FILE) migrationhelper
+	@$(MAKE) -f $(THIS_FILE) argocd
 
 .PHONY: destroy
 destroy: ## Destroys Kind Cluster
@@ -110,9 +105,12 @@ argocd: ## Set up ArgoCD
 	@sleep 10
 	@kubectl wait --for=condition=Ready pods -l app.kubernetes.io/name=argocd-server -n argocd --timeout=120s
 
+	@kubectl apply -k argocd-apps/
+
 .PHONY: argocd_delete
 argocd_delete: ## Delete ArgoCD
 	$(info $(DATE) - deleting up ArgoCD)
+	@kubectl delete -k argocd-apps/
 	@kubectl delete -k argocd/
 
 #################### APP DEPLOYMENT ####################
@@ -136,23 +134,3 @@ deploy_overlay: ## Deploy app with overlays
 delete_overlay: ## Delete app with overlays
 	$(info $(DATE) - deleting app '$(app)' in env=$(env))
 	kubectl delete -k ./apps/$(app)/overlays/$(env)
-
-.PHONY: blog
-blog: ## Deploy personal blog
-	$(info $(DATE) - Deploying blog)
-	kubectl apply  -k ./apps/blog/overlays/prod/
-
-.PHONY: photography
-photography: ## Deploy photography portfolio
-	$(info $(DATE) - Deploying photography-web)
-	kubectl apply  -k ./apps/photography-web/overlays/prod/
-
-.PHONY: newsreaders
-newsreaders: ## Deploy newsreaders app
-	$(info $(DATE) - Deploying newsreaders)
-	kubectl apply  -k ./apps/newsreaders/base/
-
-.PHONY: migrationhelper
-migrationhelper: ## Deploy migration-helper app
-	$(info $(DATE) - Deploying migration-helper)
-	kubectl apply  -k ./apps/migration-helper/
