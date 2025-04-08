@@ -101,9 +101,9 @@ argocd: ## Set up ArgoCD
 	@kubectl apply -k argocd-resources/
 
 	@sleep 30
-	# @kubectl patch -n argocd app argocd --patch-file argocd-resources/installation/sync-hook.yaml --type merge
-	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - waiting for ingress controler to be synced..."
+	@kubectl patch -n argocd app argocd --patch-file argocd-resources/installation/sync-hook.yaml --type merge
 	@kubectl patch -n argocd app ingress-nginx --patch-file argocd-resources/installation/sync-hook.yaml --type merge
+	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - waiting for ingress controler to be synced..."
 	@kubectl wait --for=jsonpath='{.status.sync.status}'=Synced applications.argoproj.io ingress-nginx -n argocd --timeout=120s
 
 .PHONY: argocd_creds
