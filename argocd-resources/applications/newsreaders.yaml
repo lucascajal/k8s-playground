@@ -1,0 +1,30 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: newsreaders
+spec:
+  syncPolicy:
+    preserveResourcesOnDeletion: true
+  generators:
+    - list:
+        elements:
+          - cluster: in-cluster
+  template:
+    metadata:
+      name: newsreaders
+    spec:
+      destination:
+        name: "{{cluster}}"
+        namespace: default
+      project: personal
+      source:
+        path: apps/newsreaders/base
+        repoURL: https://github.com/lucascajal/k8s-playground.git
+        targetRevision: HEAD
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - CreateNamespace=true
