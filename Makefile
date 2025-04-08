@@ -105,7 +105,14 @@ argocd: ## Set up ArgoCD
 	@sleep 10
 	@kubectl wait --for=condition=Ready pods -l app.kubernetes.io/name=argocd-server -n argocd --timeout=120s
 
-	@kubectl apply -k argocd-apps/
+	# @kubectl apply -k argocd-apps/
+
+	@kubectl apply -k argocd-resources/
+
+	# @sleep 30
+	# @kubectl patch -n argocd app argocd --patch-file argocd-resources/installation/sync-hook.yaml --type merge
+	# @kubectl patch -n argocd app ingress-nginx --patch-file argocd-resources/installation/sync-hook.yaml --type merge
+	# @kubectl wait --for=jsonpath='{.status.sync.status}'=Synced applications.argoproj.io ingress-nginx -n argocd --timeout=120s
 
 .PHONY: argocd_delete
 argocd_delete: ## Delete ArgoCD
