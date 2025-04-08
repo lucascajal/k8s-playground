@@ -16,7 +16,7 @@ spec:
     spec:
       destination:
         name: "{{cluster}}"
-        namespace: migration-helper
+        namespace: default
       project: personal
       source:
         path: apps/migration-helper
