@@ -24,6 +24,10 @@ ingress:
 # - hostname: hello.example.com
 #   service: hello_world
 
+# Send traffic to the kubernetes API server
+- hostname: k8s.lucascajal.com
+  service: tcp://kubernetes.default.svc.cluster.local:443
+
 # Send all subdomains to ingress controller.
 # - hostname: "*.lucascajal.com"
 - service: http://ingress-nginx-controller.ingress-nginx
