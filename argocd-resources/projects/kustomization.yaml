@@ -4,3 +4,4 @@ kind: Kustomization
 
 resources:
   - default.yaml
+  - personal.yaml

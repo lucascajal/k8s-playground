@@ -1,0 +1,30 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: migration-helper
+spec:
+  syncPolicy:
+    preserveResourcesOnDeletion: true
+  generators:
+    - list:
+        elements:
+          - cluster: in-cluster
+  template:
+    metadata:
+      name: migration-helper
+    spec:
+      destination:
+        name: "{{cluster}}"
+        namespace: migration-helper
+      project: personal
+      source:
+        path: apps/migration-helper
+        repoURL: https://github.com/lucascajal/k8s-playground.git
+        targetRevision: HEAD
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - CreateNamespace=true

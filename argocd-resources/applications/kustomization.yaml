@@ -5,3 +5,7 @@ kind: Kustomization
 resources:
   - argocd.yaml
   - ingress.yaml
+  # - blog.yaml
+  - migration-helper.yaml
+  # - newsreaders.yaml
+  # - photography-web.yaml
