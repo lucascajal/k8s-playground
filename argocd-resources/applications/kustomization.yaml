@@ -8,4 +8,4 @@ resources:
   # - blog.yaml
   - migration-helper.yaml
   - newsreaders.yaml
-  # - photography-web.yaml
+  - photography-web.yaml
