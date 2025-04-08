@@ -34,3 +34,7 @@ nodes:
     # - containerPort: 443
     #   hostPort: 443
     #   protocol: TCP
+
+# Add worker nodes below
+- role: worker
+- role: worker
