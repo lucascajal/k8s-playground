@@ -43,7 +43,7 @@ tunnel: ## Set up Cloudflared Tunnel
 		mv $$cert_path cloudflared/credentials.json
 	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - adding DNS record"
 	@cloudflared tunnel route dns --overwrite-dns k8s-tunnel "*.lucascajal.com"
-	@cloudflared tunnel route dns --overwrite-dns k8s-tunnel "lucascajal.com"
+	# @cloudflared tunnel route dns --overwrite-dns k8s-tunnel "lucascajal.com"
 	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - deploying cloudflared tunnel"
 	@kubectl apply -k cloudflared
 
