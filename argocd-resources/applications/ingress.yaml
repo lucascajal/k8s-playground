@@ -1,0 +1,30 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: ingress-nginx
+spec:
+  syncPolicy:
+    preserveResourcesOnDeletion: true
+  generators:
+    - list:
+        elements:
+          - cluster: in-cluster
+  template:
+    metadata:
+      name: ingress-nginx
+    spec:
+      destination:
+        name: "{{cluster}}"
+        namespace: ingress-nginx
+      project: default
+      source:
+        path: ingress-nginx
+        repoURL: https://github.com/lucascajal/k8s-playground.git
+        targetRevision: HEAD
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - CreateNamespace=true

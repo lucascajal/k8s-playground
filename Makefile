@@ -23,7 +23,6 @@ cluster: ## Creates Kind Cluster. Following https://kind.sigs.k8s.io/docs/user/i
 	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - setting up namespaces for each environment"
 	@kubectl apply -k namespaces/
 
-	@$(MAKE) -f $(THIS_FILE) ingress
 	@$(MAKE) -f $(THIS_FILE) tunnel
 	@$(MAKE) -f $(THIS_FILE) oidc
 	@$(MAKE) -f $(THIS_FILE) dashboard
@@ -63,14 +62,6 @@ oidc: ## Set up OAuth2-poxy
 	$(info $(DATE) - creating OAuth2-proxy)
 	@kubectl apply -k oauth2-proxy
 
-#################### Ingress (NGINX) ####################
-.PHONY: ingress
-ingress: ## Set up OAuth2-poxy
-	$(info $(DATE) - setting up ingress controler)
-	@kubectl apply -k ingress-nginx/
-	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - waiting for ingress controler to be up..."
-	@sleep 10
-	@kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=controller -n ingress-nginx --timeout=600s
 
 #################### DASHBOARD ####################
 .PHONY: dashboard
@@ -109,10 +100,11 @@ argocd: ## Set up ArgoCD
 
 	@kubectl apply -k argocd-resources/
 
-	# @sleep 30
+	@sleep 30
 	# @kubectl patch -n argocd app argocd --patch-file argocd-resources/installation/sync-hook.yaml --type merge
-	# @kubectl patch -n argocd app ingress-nginx --patch-file argocd-resources/installation/sync-hook.yaml --type merge
-	# @kubectl wait --for=jsonpath='{.status.sync.status}'=Synced applications.argoproj.io ingress-nginx -n argocd --timeout=120s
+	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - waiting for ingress controler to be synced..."
+	@kubectl patch -n argocd app ingress-nginx --patch-file argocd-resources/installation/sync-hook.yaml --type merge
+	@kubectl wait --for=jsonpath='{.status.sync.status}'=Synced applications.argoproj.io ingress-nginx -n argocd --timeout=120s
 
 .PHONY: argocd_delete
 argocd_delete: ## Delete ArgoCD
