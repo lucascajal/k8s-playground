@@ -96,8 +96,6 @@ argocd: ## Set up ArgoCD
 	@sleep 10
 	@kubectl wait --for=condition=Ready pods -l app.kubernetes.io/name=argocd-server -n argocd --timeout=120s
 
-	# @kubectl apply -k argocd-apps/
-
 	@kubectl apply -k argocd-resources/
 
 	@sleep 30
@@ -116,7 +114,7 @@ argocd_creds: ## Get ArgoCD admin login
 .PHONY: argocd_delete
 argocd_delete: ## Delete ArgoCD
 	$(info $(DATE) - deleting up ArgoCD)
-	@kubectl delete -k argocd-apps/
+	@kubectl delete -k argocd-resources/
 	@kubectl delete -k argocd/
 
 #################### APP DEPLOYMENT ####################
