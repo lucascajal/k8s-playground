@@ -106,6 +106,13 @@ argocd: ## Set up ArgoCD
 	@kubectl patch -n argocd app ingress-nginx --patch-file argocd-resources/installation/sync-hook.yaml --type merge
 	@kubectl wait --for=jsonpath='{.status.sync.status}'=Synced applications.argoproj.io ingress-nginx -n argocd --timeout=120s
 
+.PHONY: argocd_creds
+argocd_creds: ## Get ArgoCD admin login
+	@echo "===== ArgoCD Initial credentials ====="
+	@echo "Username: admin"
+	@echo "Password: $$(kubectl get secrets argocd-initial-admin-secret -o jsonpath='{.data.password}' -n argocd | base64 -d)"
+	@echo "======================================"
+
 .PHONY: argocd_delete
 argocd_delete: ## Delete ArgoCD
 	$(info $(DATE) - deleting up ArgoCD)
