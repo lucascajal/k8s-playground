@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-cm
+data:
+  admin.enabled: "true" # Disable default admin user
+  application.instanceLabelKey: argocd.argoproj.io/instance
+  url: https://argocd.lucascajal.com
+  oidc.config: |
+    name: Auth0
+    issuer: https://lucascajal.eu.auth0.com/
+    # Reference keys in another-secret (and not argocd-secret)
+    clientID: $auth0:clientID
+    clientSecret: $auth0:clientSecret
+    domain_hint: lucascajal.com
+    requestedScopes:
+    - openid
+    - profile
+    - email
+    # not strictly necessary - but good practice:
+    - 'http://lucascajal.com/groups'

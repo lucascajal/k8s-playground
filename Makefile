@@ -92,6 +92,7 @@ dashboard_delete: ## Delete Kubernetes Dashboard
 argocd: ## Set up ArgoCD
 	$(info $(DATE) - setting up ArgoCD)
 	@kubectl apply -k argocd/
+	@kubectl apply -k argocd/secrets/
 	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - waiting for argocd-server to be up..."
 	@sleep 10
 	@kubectl wait --for=condition=Ready pods -l app.kubernetes.io/name=argocd-server -n argocd --timeout=120s
