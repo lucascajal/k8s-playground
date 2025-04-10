@@ -24,8 +24,7 @@ cluster: ## Creates Kind Cluster. Following https://kind.sigs.k8s.io/docs/user/i
 	@kubectl apply -k namespaces/
 
 	@$(MAKE) -f $(THIS_FILE) tunnel
-	@$(MAKE) -f $(THIS_FILE) oidc
-	@$(MAKE) -f $(THIS_FILE) dashboard
+	@$(MAKE) -f $(THIS_FILE) oidc_secrets
 	@$(MAKE) -f $(THIS_FILE) argocd
 
 .PHONY: destroy
@@ -57,35 +56,10 @@ tunnel_delete: ## Delete Cloudflared Tunnel
 	@cloudflared tunnel delete k8s-tunnel
 
 #################### OIDC (OAuth2-proxy) ####################
-.PHONY: oidc
-oidc: ## Set up OAuth2-poxy
-	$(info $(DATE) - creating OAuth2-proxy)
-	@kubectl apply -k oauth2-proxy
 
-
-#################### DASHBOARD ####################
-.PHONY: dashboard
-dashboard: ## Set up Kubernetes Dashboard
-	$(info $(DATE) - creating Kubernetes Dashboard)
-	@helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
-	@helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard \
-		--create-namespace --namespace kubernetes-dashboard
-		# Uncomment the following lines to expose the dashboard without OIDC. See https://github.com/kubernetes/dashboard/blob/master/docs/user/access-control/creating-sample-user.md
-		# --set=app.ingress.enabled=true \
-		# --set=app.ingress.hosts[0]=dashboard-unsecured.lucascajal.com \
-		# --set=app.ingress.useDefaultIngressClass=true \
-		# --set=app.ingress.tls.enabled=false
-	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - waiting for dashboard to be up..."
-	@sleep 10
-	@kubectl wait --for=condition=ready pod -l app.kubernetes.io/component=app -n kubernetes-dashboard --timeout=120s
-
-	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - adding dashboard ingress & users"
-	@kubectl apply -k dashboard
-
-.PHONY: dashboard_delete
-dashboard_delete: ## Delete Kubernetes Dashboard
-	$(info $(DATE) - deleting Kubernetes Dashboard)
-	@helm delete kubernetes-dashboard --namespace kubernetes-dashboard
+.PHONY: oidc_secrets
+oidc_secrets: ## Set up OAuth2-poxy secrets
+	@kubectl apply -k oauth2-proxy/secrets
 
 #################### ARGO CD ####################
 .PHONY: argocd

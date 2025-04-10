@@ -5,6 +5,8 @@ kind: Kustomization
 resources:
   - argocd.yaml
   - ingress.yaml
+  - oauth2-proxy.yaml
+  - dashboard.yaml
   - blog.yaml
   - migration-helper.yaml
   - newsreaders.yaml

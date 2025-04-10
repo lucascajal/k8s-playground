@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: k8s-dashboard
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: in-cluster
+  template:
+    metadata:
+      name: k8s-dashboard
+    spec:
+      destination:
+        name: "{{cluster}}"
+        namespace: kubernetes-dashboard
+      project: default
+      sources:
+        - chart: kubernetes-dashboard
+          repoURL: https://kubernetes.github.io/dashboard/
+          targetRevision: 7.11.1
+          helm:
+            releaseName: kubernetes-dashboard
+        - path: dashboard
+          repoURL: https://github.com/lucascajal/k8s-playground.git
+          targetRevision: HEAD
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - CreateNamespace=true
