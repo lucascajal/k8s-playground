@@ -92,25 +92,3 @@ argocd_delete: ## Delete ArgoCD
 	$(info $(DATE) - deleting up ArgoCD)
 	@kubectl delete -k argocd-resources/
 	@kubectl delete -k argocd/
-
-#################### APP DEPLOYMENT ####################
-.PHONY: deploy
-deploy: ## Deploy app
-	$(info $(DATE) - creating app '$(app)')
-	kubectl apply -k ./apps/$(app)/base
-
-.PHONY: delete
-delete: ## Delete app
-	$(info $(DATE) - deleting app '$(app)')
-	kubectl delete -k ./apps/$(app)/base
-
-#################### APP DEPLOYMENT  WITH OVERLAYS (ENVs) ####################
-.PHONY: deploy_overlay
-deploy_overlay: ## Deploy app with overlays
-	$(info $(DATE) - deploying app '$(app)' in env=$(env))
-	kubectl apply -k ./apps/$(app)/overlays/$(env)
-
-.PHONY: delete_overlay
-delete_overlay: ## Delete app with overlays
-	$(info $(DATE) - deleting app '$(app)' in env=$(env))
-	kubectl delete -k ./apps/$(app)/overlays/$(env)
