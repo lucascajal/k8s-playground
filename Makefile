@@ -33,24 +33,25 @@ destroy: ## Destroys Kind Cluster
 	@$(MAKE) -f $(THIS_FILE) tunnel_delete
 	@kind delete cluster --name my-cluster
 
-# TUNNEL CLOUDFLARED
+#################### CLOUDFLARED TUNNEL ####################
 # Prerequisites: install cloudflared, run `cloudflared tunnel login`
 .PHONY: tunnel
 tunnel: ## Set up Cloudflared Tunnel
 	$(info $(DATE) - creating cloudflared tunnel)
 	@cert_path=$$(cloudflared tunnel create k8s-tunnel | sed -n 's/^Tunnel credentials written to \(.*\.json\).*/\1/p') && \
-		mv $$cert_path cloudflared/credentials.json
+		mv $$cert_path cloudflared/secrets/credentials.json
+
 	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - adding DNS record"
 	@cloudflared tunnel route dns --overwrite-dns k8s-tunnel "*.lucascajal.com"
-	# @cloudflared tunnel route dns --overwrite-dns k8s-tunnel "lucascajal.com"
-	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - deploying cloudflared tunnel"
-	@kubectl apply -k cloudflared
+
+	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - creating cloudflared secrets"
+	@kubectl apply -k cloudflared/secrets
 
 .PHONY: tunnel_delete
 tunnel_delete: ## Delete Cloudflared Tunnel
 	$(info $(DATE) - deleting cloudflared tunnel)
-	@kubectl delete -k cloudflared --ignore-not-found
-	@rm -f cloudflared/credentials.json
+	@kubectl delete -k cloudflared/secrets
+	@rm -f cloudflared/secrets/credentials.json
 	@cloudflared tunnel cleanup k8s-tunnel
 	@sleep 5
 	@cloudflared tunnel delete k8s-tunnel
