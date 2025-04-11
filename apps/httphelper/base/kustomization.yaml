@@ -1,5 +1,0 @@
-# Include resources
-resources:
-  - deployment.yaml
-  - ingress.yaml
-  - service.yaml
