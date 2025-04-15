@@ -15,3 +15,4 @@ spec:
   - https://github.com/lucascajal/k8s-playground.git
   - https://kubernetes.github.io/dashboard/
   - https://charts.jetstack.io # cert-manager
+  - https://charts.external-secrets.io

@@ -6,6 +6,7 @@ resources:
   - argocd.yaml
   - ingress.yaml
   - cert-manager.yaml
+  - external-secrets.yaml
   - cloudflared.yaml
   - oauth2-proxy.yaml
   - dashboard.yaml
