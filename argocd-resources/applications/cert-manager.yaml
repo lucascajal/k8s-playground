@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cert-manager
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: in-cluster
+  template:
+    metadata:
+      name: cert-manager
+    spec:
+      destination:
+        name: "{{cluster}}"
+        namespace: cert-manager
+      project: default
+      sources:
+        - chart: cert-manager
+          repoURL: https://charts.jetstack.io
+          targetRevision: v1.17.0
+          helm:
+            releaseName: cert-manager
+            parameters:
+              - name: crds.enabled
+                value: "true"
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - CreateNamespace=true
