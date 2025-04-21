@@ -6,3 +6,5 @@ resources:
   - bitwarden-bootstrap-issuer.yaml
   - bitwarden-bootstrap-certificate.yaml
   - bitwarden-certificate-issuer.yaml
+  - clusterissuer.yaml
+  - externalsecret.yaml
