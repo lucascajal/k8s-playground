@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
   - bitwarden-certificate.yaml
   - bitwarden-secret-store.yaml
+  - clusterexternalsecret.yaml

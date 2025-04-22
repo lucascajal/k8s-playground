@@ -20,9 +20,6 @@ cluster: ## Creates Kind Cluster. Following https://kind.sigs.k8s.io/docs/user/i
 	$(info $(DATE) - creating cluster)
 	@kind create cluster --name my-cluster --config=cluster-config.yaml
 
-	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - setting up namespaces for each environment"
-	@kubectl apply -k namespaces/
-
 	@$(MAKE) -f $(THIS_FILE) tunnel
 	@$(MAKE) -f $(THIS_FILE) argocd
 
