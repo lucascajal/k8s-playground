@@ -24,7 +24,6 @@ cluster: ## Creates Kind Cluster. Following https://kind.sigs.k8s.io/docs/user/i
 	@kubectl apply -k namespaces/
 
 	@$(MAKE) -f $(THIS_FILE) tunnel
-	@$(MAKE) -f $(THIS_FILE) oidc_secrets
 	@$(MAKE) -f $(THIS_FILE) argocd
 
 .PHONY: destroy
@@ -55,12 +54,6 @@ tunnel_delete: ## Delete Cloudflared Tunnel
 	@cloudflared tunnel cleanup k8s-tunnel
 	@sleep 5
 	@cloudflared tunnel delete k8s-tunnel
-
-#################### OIDC (OAuth2-proxy) ####################
-
-.PHONY: oidc_secrets
-oidc_secrets: ## Set up OAuth2-poxy secrets
-	@kubectl apply -k oauth2-proxy/secrets
 
 #################### ARGO CD ####################
 .PHONY: argocd
