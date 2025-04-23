@@ -20,7 +20,7 @@ cluster: ## Creates Kind Cluster. Following https://kind.sigs.k8s.io/docs/user/i
 	$(info $(DATE) - creating cluster)
 	@kind create cluster --name my-cluster --config=cluster-config.yaml
 
-	@$(MAKE) -f $(THIS_FILE) tunnel
+	# @$(MAKE) -f $(THIS_FILE) terraform
 	@$(MAKE) -f $(THIS_FILE) argocd
 
 .PHONY: destroy
@@ -29,28 +29,18 @@ destroy: ## Destroys Kind Cluster
 	@$(MAKE) -f $(THIS_FILE) tunnel_delete
 	@kind delete cluster --name my-cluster
 
-#################### CLOUDFLARED TUNNEL ####################
-# Prerequisites: install cloudflared, run `cloudflared tunnel login`
-.PHONY: tunnel
-tunnel: ## Set up Cloudflared Tunnel
-	$(info $(DATE) - creating cloudflared tunnel)
-	@cert_path=$$(cloudflared tunnel create k8s-tunnel | sed -n 's/^Tunnel credentials written to \(.*\.json\).*/\1/p') && \
-		mv $$cert_path cloudflared/secrets/credentials.json
+# #################### TERRAFORM ####################
+# .PHONY: terraform
+# terraform: ## Create infrastructure: cloudflare tunnel, bitwarden vault, etc.
+# 	terraform -chdir=terraform apply -auto-approve
 
-	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - adding DNS record"
-	@cloudflared tunnel route dns --overwrite-dns k8s-tunnel "*.lucascajal.com"
+# 	terraform -chdir=terraform output -json | jq -r '.bitwarden_token.value'
 
-	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - creating cloudflared secrets"
-	@kubectl apply -k cloudflared/secrets
+# 	# Substitute for @kubectl apply -k external-secrets/secrets
+# 	kubectl create secret generic bitwarden-access-token \
+# 		--from-literal=token="$(echo 'mypassword')" \
+# 		--namespace=external-secrets
 
-.PHONY: tunnel_delete
-tunnel_delete: ## Delete Cloudflared Tunnel
-	$(info $(DATE) - deleting cloudflared tunnel)
-	@kubectl delete -k cloudflared/secrets
-	@rm -f cloudflared/secrets/credentials.json
-	@cloudflared tunnel cleanup k8s-tunnel
-	@sleep 5
-	@cloudflared tunnel delete k8s-tunnel
 
 #################### ARGO CD ####################
 .PHONY: argocd

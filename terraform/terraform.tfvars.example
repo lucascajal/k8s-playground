@@ -1,0 +1,23 @@
+# Cloudflare vars
+cloudflare_zone_id    = "<cloudflare-zone-id>"
+cloudflare_account_id = "<cloudflare-account-id>"
+cloudflare_api_token  = "<cloudflare-api-token>"
+cloudflare_domain     = "<cloudflare-domain>"
+cloudflare_cert_manager_api_token  = "<cloudflare-api-token>"
+
+# Bitwarden vars
+bitwarden_token = "<bitwarden-access-token>"
+
+# Auth0 vars
+auth0_client_id     = "<auth0-client-id>"
+auth0_client_secret = "<auth0-client-secret>"
+auth0_cookie_secret = "<auth0-cookie-secret>"
+
+# Container registry vars
+container_registry_creds = {
+  "auths" = {
+    "registry.gitlab.com" = {
+      "auth" = "<gitlab-container-registry-token>"
+    }
+  }
+}

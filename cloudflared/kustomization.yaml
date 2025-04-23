@@ -4,6 +4,7 @@ kind: Kustomization
 
 resources:
   - deployment.yaml
+  - externalsecret.yaml
 
 # Generate config
 configMapGenerator:
