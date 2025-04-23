@@ -5,6 +5,7 @@ provider "registry.terraform.io/cloudflare/cloudflare" {
   version     = "5.3.0"
   constraints = "~> 5.0"
   hashes = [
+    "h1:ASK1oT+wl2MDATPNL3PVr76A1QEEqwJPI6n8TGHHcF4=",
     "h1:CDIOBCvQ+1uhDGRSG6OM3kB0ZorvRtBw1a4etN+3IPc=",
     "zh:2f7b526dc7bdea594214b7428bf02a80643a0b53258d4981c747dae6dcfe2b57",
     "zh:b96462bf725e12d7e497f2166948aa7cce864a399b8625a791137eef63eb6b24",
@@ -21,6 +22,7 @@ provider "registry.terraform.io/cloudflare/cloudflare" {
 provider "registry.terraform.io/hashicorp/random" {
   version = "3.7.2"
   hashes = [
+    "h1:Lmv2TxyKKm9Vt4uxcPZHw1uf0Ax/yYizJlilbLSZN8E=",
     "h1:hkKSY5xI4R1H4Yrg10HHbtOoxZif2dXa9HFPSbaVg5o=",
     "zh:14829603a32e4bc4d05062f059e545a91e27ff033756b48afbae6b3c835f508f",
     "zh:1527fb07d9fea400d70e9e6eb4a2b918d5060d604749b6f1c361518e7da546dc",
@@ -42,6 +44,7 @@ provider "registry.terraform.io/maxlaverse/bitwarden" {
   constraints = ">= 0.13.6"
   hashes = [
     "h1:WKsJ3zOtu3sSZEOjw4IBWTFQ8UkW/X6Zoyo0t4dMEIs=",
+    "h1:mxVB/P0akzHTRU/5XWIHLwXqhQ1IRCk9J1dMBSrAEzw=",
     "zh:0548cf354bd65bb146e63db28fe3c6ab9339118f0255271886d8088325c7a044",
     "zh:1eb2f8b07da17acb0cf9fde60b15facfe599faaf912b0a540ad18629e6fd76eb",
     "zh:2f58bcce32cb8082f0627f7ca12925d73e0c9a2fe9501a6060dfa90472a5ddc3",

@@ -20,27 +20,24 @@ cluster: ## Creates Kind Cluster. Following https://kind.sigs.k8s.io/docs/user/i
 	$(info $(DATE) - creating cluster)
 	@kind create cluster --name my-cluster --config=cluster-config.yaml
 
-	# @$(MAKE) -f $(THIS_FILE) terraform
+	@$(MAKE) -f $(THIS_FILE) terraform
 	@$(MAKE) -f $(THIS_FILE) argocd
 
 .PHONY: destroy
 destroy: ## Destroys Kind Cluster
 	$(info $(DATE) - destroying cluster)
-	@$(MAKE) -f $(THIS_FILE) tunnel_delete
 	@kind delete cluster --name my-cluster
 
-# #################### TERRAFORM ####################
-# .PHONY: terraform
-# terraform: ## Create infrastructure: cloudflare tunnel, bitwarden vault, etc.
-# 	terraform -chdir=terraform apply -auto-approve
+#################### TERRAFORM ####################
+.PHONY: terraform
+terraform: ## Create infrastructure: cloudflare tunnel, bitwarden vault, etc.
+	terraform -chdir=terraform apply -auto-approve
 
-# 	terraform -chdir=terraform output -json | jq -r '.bitwarden_token.value'
-
-# 	# Substitute for @kubectl apply -k external-secrets/secrets
-# 	kubectl create secret generic bitwarden-access-token \
-# 		--from-literal=token="$(echo 'mypassword')" \
-# 		--namespace=external-secrets
-
+	@echo "Creating secret 'bitwarden-access-token' in namespace 'external-secrets'..."
+	@kubectl get namespace external-secrets >/dev/null 2>&1 || kubectl create namespace external-secrets
+	@kubectl create secret generic bitwarden-access-token \
+		--from-literal=token=$$(terraform -chdir=terraform output -json | jq -r '.bitwarden_token.value') \
+		--namespace=external-secrets
 
 #################### ARGO CD ####################
 .PHONY: argocd

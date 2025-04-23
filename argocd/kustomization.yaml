@@ -7,7 +7,7 @@ resources:
   - namespace.yaml
   - https://raw.githubusercontent.com/argoproj/argo-cd/refs/tags/v2.14.8/manifests/install.yaml
   - ingress.yaml
-  - externalsecret.yaml
+  #- externalsecret.yaml
 
 patches:
   - path: patches/argocd-cm.yaml
