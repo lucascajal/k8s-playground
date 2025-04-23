@@ -47,23 +47,35 @@ resource "bitwarden_secret" "cloudflare_cert_manager_api_token" {
 }
 
 # Auth0
-resource "bitwarden_secret" "auth0_client_id" {
+resource "bitwarden_secret" "auth0_oidc_client_id" {
   key        = "OIDC-Client-ID"
-  value      = var.auth0_client_id
+  value      = var.auth0_oidc_client_id
   project_id = bitwarden_project.bitwarden_project.id
   note       = "Auth0 client ID"
 }
-resource "bitwarden_secret" "auth0_client_secret" {
+resource "bitwarden_secret" "auth0_oidc_client_secret" {
   key        = "OIDC-Client-Secret"
-  value      = var.auth0_client_secret
+  value      = var.auth0_oidc_client_secret
   project_id = bitwarden_project.bitwarden_project.id
   note       = "Auth0 client secret"
 }
-resource "bitwarden_secret" "auth0_cookie_secret" {
+resource "bitwarden_secret" "auth0_oidc_cookie_secret" {
   key        = "OIDC-Cookie-Secret"
-  value      = var.auth0_cookie_secret
+  value      = var.auth0_oidc_cookie_secret
   project_id = bitwarden_project.bitwarden_project.id
   note       = "Auth0 cookie secret. Generated with following command:\ndd if=/dev/urandom bs=32 count=1 2>/dev/null | base64 | tr -d -- '\\n' | tr -- '+/' '-_' ; echo"
+}
+resource "bitwarden_secret" "auth0_argocd_client_id" {
+  key        = "argocd-clientID"
+  value      = var.auth0_argocd_client_id
+  project_id = bitwarden_project.bitwarden_project.id
+  note       = "Auth0 clientID for argocd portal"
+}
+resource "bitwarden_secret" "auth0_argocd_client_secret" {
+  key        = "argocd-clientSecret"
+  value      = var.auth0_argocd_client_secret
+  project_id = bitwarden_project.bitwarden_project.id
+  note       = "Auth0 clientSecret for argocd portal"
 }
 
 # Container Registry

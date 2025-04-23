@@ -33,18 +33,28 @@ variable "bitwarden_token" {
 }
 
 # Auth0 variables
-variable "auth0_client_id" {
-  description = "Auth0 client ID"
+variable "auth0_oidc_client_id" {
+  description = "Auth0 client ID for Kubernetes dashboard"
   type        = string
   sensitive   = true
 }
-variable "auth0_client_secret" {
-  description = "Auth0 client secret"
+variable "auth0_oidc_client_secret" {
+  description = "Auth0 client secret for Kubernetes dashboard"
   type        = string
   sensitive   = true
 }
-variable "auth0_cookie_secret" {
-  description = "Auth0 cookie secret"
+variable "auth0_oidc_cookie_secret" {
+  description = "Auth0 cookie secret for Kubernetes dashboard"
+  type        = string
+  sensitive   = true
+}
+variable "auth0_argocd_client_id" {
+  description = "Auth0 client ID for ArgoCD"
+  type        = string
+  sensitive   = true
+}
+variable "auth0_argocd_client_secret" {
+  description = "Auth0 client secret for ArgoCD"
   type        = string
   sensitive   = true
 }

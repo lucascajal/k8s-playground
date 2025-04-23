@@ -7,7 +7,7 @@ output "bitwarden_project_name" {
 }
 output "bitwarden_token" {
   sensitive = true
-  value = var.bitwarden_token
+  value     = var.bitwarden_token
 }
 
 output "tunnel_id" {
