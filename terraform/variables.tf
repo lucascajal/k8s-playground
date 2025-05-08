@@ -60,8 +60,14 @@ variable "auth0_argocd_client_secret" {
 }
 
 # Container Registry variables
-variable "container_registry_creds" {
-  description = "Container registry dockerconfig json"
-  type        = any
-  sensitive   = true
+variable "registry_url" {
+  type = string
+}
+variable "registry_username" {
+  type      = string
+  sensitive = true
+}
+variable "registry_password" {
+  type      = string
+  sensitive = true
 }

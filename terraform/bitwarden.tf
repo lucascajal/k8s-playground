@@ -80,8 +80,14 @@ resource "bitwarden_secret" "auth0_argocd_client_secret" {
 
 # Container Registry
 resource "bitwarden_secret" "container_registry_creds" {
-  key        = "container-registry-creds"
-  value      = jsonencode(var.container_registry_creds)
   project_id = bitwarden_project.bitwarden_project.id
   note       = "Container registry credentials, as a dockerconfig json"
+  key        = "container-registry-creds"
+  value = jsonencode({
+    "auths" = {
+      "${var.registry_url}" = {
+        "auth" = base64encode("${var.registry_username}:${var.registry_password}")
+      }
+    }
+  })
 }
