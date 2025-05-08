@@ -2,7 +2,9 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: oauth2-proxy
+  name: photography-web
+  annotations:
+    argocd.argoproj.io/sync-wave: "100"
 spec:
   syncPolicy:
     preserveResourcesOnDeletion: true
@@ -12,14 +14,14 @@ spec:
           - cluster: in-cluster
   template:
     metadata:
-      name: oauth2-proxy
+      name: photography-web
     spec:
       destination:
         name: "{{cluster}}"
-        namespace: oauth2-proxy
-      project: default
+        namespace: default
+      project: personal
       source:
-        path: oauth2-proxy
+        path: apps/photography-web/base
         repoURL: https://github.com/lucascajal/k8s-playground.git
         targetRevision: HEAD
       syncPolicy:

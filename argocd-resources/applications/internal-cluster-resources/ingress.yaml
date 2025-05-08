@@ -2,7 +2,9 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: cloudflared
+  name: ingress-nginx
+  annotations:
+    argocd.argoproj.io/sync-wave: "20"
 spec:
   syncPolicy:
     preserveResourcesOnDeletion: true
@@ -12,14 +14,14 @@ spec:
           - cluster: in-cluster
   template:
     metadata:
-      name: cloudflared
+      name: ingress-nginx
     spec:
       destination:
         name: "{{cluster}}"
-        namespace: tunnel-cloudflared
+        namespace: ingress-nginx
       project: default
       source:
-        path: cloudflared
+        path: cluster-resources/ingress-nginx
         repoURL: https://github.com/lucascajal/k8s-playground.git
         targetRevision: HEAD
       syncPolicy:

@@ -2,7 +2,9 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: blog
+  name: cloudflared
+  annotations:
+    argocd.argoproj.io/sync-wave: "60"
 spec:
   syncPolicy:
     preserveResourcesOnDeletion: true
@@ -12,14 +14,14 @@ spec:
           - cluster: in-cluster
   template:
     metadata:
-      name: blog
+      name: cloudflared
     spec:
       destination:
         name: "{{cluster}}"
-        namespace: default
-      project: personal
+        namespace: tunnel-cloudflared
+      project: default
       source:
-        path: apps/blog/base
+        path: cluster-resources/cloudflared
         repoURL: https://github.com/lucascajal/k8s-playground.git
         targetRevision: HEAD
       syncPolicy:

@@ -1,0 +1,11 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - argocd.yaml
+  - cert-manager.yaml
+  - cloudflared.yaml
+  - external-secrets.yaml
+  - ingress.yaml
+  - oauth2-proxy.yaml

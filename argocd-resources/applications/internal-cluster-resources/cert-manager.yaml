@@ -1,7 +1,10 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: k8s-dashboard
+  name: cert-manager
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   generators:
     - list:
@@ -9,19 +12,22 @@ spec:
           - cluster: in-cluster
   template:
     metadata:
-      name: k8s-dashboard
+      name: cert-manager
     spec:
       destination:
         name: "{{cluster}}"
-        namespace: kubernetes-dashboard
+        namespace: cert-manager
       project: default
       sources:
-        - chart: kubernetes-dashboard
-          repoURL: https://kubernetes.github.io/dashboard/
-          targetRevision: 7.11.1
+        - chart: cert-manager
+          repoURL: https://charts.jetstack.io
+          targetRevision: v1.17.0
           helm:
-            releaseName: kubernetes-dashboard
-        - path: dashboard
+            releaseName: cert-manager
+            parameters:
+              - name: crds.enabled
+                value: "true"
+        - path: cluster-resources/cert-manager
           repoURL: https://github.com/lucascajal/k8s-playground.git
           targetRevision: HEAD
       syncPolicy:

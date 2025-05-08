@@ -3,14 +3,5 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - argocd.yaml
-  - ingress.yaml
-  - cert-manager.yaml
-  - external-secrets.yaml
-  - cloudflared.yaml
-  - oauth2-proxy.yaml
-  - dashboard.yaml
-  - blog.yaml
-  - migration-helper.yaml
-  - newsreaders.yaml
-  - photography-web.yaml
+  - deployed-applications
+  - internal-cluster-resources

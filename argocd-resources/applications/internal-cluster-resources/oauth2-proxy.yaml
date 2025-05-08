@@ -2,7 +2,9 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: ingress-nginx
+  name: oauth2-proxy
+  annotations:
+    argocd.argoproj.io/sync-wave: "70"
 spec:
   syncPolicy:
     preserveResourcesOnDeletion: true
@@ -12,14 +14,14 @@ spec:
           - cluster: in-cluster
   template:
     metadata:
-      name: ingress-nginx
+      name: oauth2-proxy
     spec:
       destination:
         name: "{{cluster}}"
-        namespace: ingress-nginx
+        namespace: oauth2-proxy
       project: default
       source:
-        path: ingress-nginx
+        path: cluster-resources/oauth2-proxy
         repoURL: https://github.com/lucascajal/k8s-playground.git
         targetRevision: HEAD
       syncPolicy:
