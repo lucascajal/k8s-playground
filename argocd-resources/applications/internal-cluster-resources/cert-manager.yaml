@@ -4,7 +4,7 @@ kind: ApplicationSet
 metadata:
   name: cert-manager
   annotations:
-    argocd.argoproj.io/sync-wave: "40"
+    argocd.argoproj.io/sync-wave: "0"
 spec:
   generators:
     - list:
