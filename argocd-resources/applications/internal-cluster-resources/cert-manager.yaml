@@ -1,7 +1,10 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: cert-manager
+  annotations:
+    argocd.argoproj.io/sync-wave: "40"
 spec:
   generators:
     - list:
@@ -24,7 +27,7 @@ spec:
             parameters:
               - name: crds.enabled
                 value: "true"
-        - path: cert-manager
+        - path: cluster-resources/cert-manager
           repoURL: https://github.com/lucascajal/k8s-playground.git
           targetRevision: HEAD
       syncPolicy:

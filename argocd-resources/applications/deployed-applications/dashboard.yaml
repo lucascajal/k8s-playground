@@ -1,7 +1,10 @@
+---
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: k8s-dashboard
+  annotations:
+    argocd.argoproj.io/sync-wave: "130"
 spec:
   generators:
     - list:
@@ -21,7 +24,7 @@ spec:
           targetRevision: 7.11.1
           helm:
             releaseName: kubernetes-dashboard
-        - path: dashboard
+        - path: apps/dashboard
           repoURL: https://github.com/lucascajal/k8s-playground.git
           targetRevision: HEAD
       syncPolicy:

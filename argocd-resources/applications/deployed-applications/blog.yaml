@@ -2,7 +2,9 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: photography-web
+  name: blog
+  annotations:
+    argocd.argoproj.io/sync-wave: "140"
 spec:
   syncPolicy:
     preserveResourcesOnDeletion: true
@@ -12,14 +14,14 @@ spec:
           - cluster: in-cluster
   template:
     metadata:
-      name: photography-web
+      name: blog
     spec:
       destination:
         name: "{{cluster}}"
         namespace: default
       project: personal
       source:
-        path: apps/photography-web/base
+        path: apps/blog/base
         repoURL: https://github.com/lucascajal/k8s-playground.git
         targetRevision: HEAD
       syncPolicy:

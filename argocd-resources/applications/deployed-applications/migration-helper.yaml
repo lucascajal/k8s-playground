@@ -2,7 +2,9 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: newsreaders
+  name: migration-helper
+  annotations:
+    argocd.argoproj.io/sync-wave: "120"
 spec:
   syncPolicy:
     preserveResourcesOnDeletion: true
@@ -12,14 +14,14 @@ spec:
           - cluster: in-cluster
   template:
     metadata:
-      name: newsreaders
+      name: migration-helper
     spec:
       destination:
         name: "{{cluster}}"
         namespace: default
       project: personal
       source:
-        path: apps/newsreaders/base
+        path: apps/migration-helper
         repoURL: https://github.com/lucascajal/k8s-playground.git
         targetRevision: HEAD
       syncPolicy:
