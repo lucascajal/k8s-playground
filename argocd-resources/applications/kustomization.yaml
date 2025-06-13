@@ -9,8 +9,8 @@ resources:
   - external-secrets.yaml
   - cloudflared.yaml
   - oauth2-proxy.yaml
-  - dashboard.yaml
-  - blog.yaml
-  - migration-helper.yaml
+  # - dashboard.yaml
+  # - blog.yaml
+  # - migration-helper.yaml
   - newsreaders.yaml
   - photography-web.yaml
