@@ -4,7 +4,7 @@ kind: Kustomization
 
 resources:
   # - blog.yaml
-  - dashboard.yaml
-  - migration-helper.yaml
+  # - dashboard.yaml
+  # - migration-helper.yaml
   - newsreaders.yaml
   - photography-web.yaml
