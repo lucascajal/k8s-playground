@@ -36,5 +36,5 @@ nodes:
     #   protocol: TCP
 
 # Add worker nodes below
-- role: worker
-- role: worker
+# - role: worker
+# - role: worker
