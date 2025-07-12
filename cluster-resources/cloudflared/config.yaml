@@ -31,7 +31,7 @@ ingress:
     noTLSVerify: true  # Skip origin certificate validation
 
 - hostname: k8s.lucascajal.com
-  service: tcp://kubernetes.default.svc.cluster.local:443
+  service: tcp://kubernetes.default.svc:443
 
 - hostname: hello.lucascajal.com
   service: hello_world
