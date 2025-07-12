@@ -28,6 +28,12 @@ ingress:
 - hostname: k8s.lucascajal.com
   service: tcp://kubernetes.default.svc.cluster.local:443
 
+- hostname: api.k8s.lucascajal.com
+  service: https://kubernetes.default.svc.cluster.local
+  originRequest:
+    # trust the cluster’s CA
+    caPool: /etc/ssl/certs/ca-certificates.crt
+
 # Send all subdomains to ingress controller.
 # - hostname: "*.lucascajal.com"
 - service: http://ingress-nginx-controller.ingress-nginx
