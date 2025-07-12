@@ -4,6 +4,7 @@ kind: Kustomization
 
 resources:
   - argocd.yaml
+  - auth0-role-bindings.yaml
   - cert-manager.yaml
   - cloudflared.yaml
   - external-secrets.yaml

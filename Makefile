@@ -18,15 +18,17 @@ help: ## Display this help
 .PHONY: cluster
 cluster: ## Creates Kind Cluster. Following https://kind.sigs.k8s.io/docs/user/ingress/
 	$(info $(DATE) - creating cluster)
-	@kind create cluster --name my-cluster --config=cluster-config.yaml
+	@kind create cluster --name pi5 --config=cluster-config.yaml
 
 	@$(MAKE) -f $(THIS_FILE) terraform
 	@$(MAKE) -f $(THIS_FILE) argocd
 
+# sudo cat /root/.kube/config > ~/.kube/config
+
 .PHONY: destroy
 destroy: ## Destroys Kind Cluster
 	$(info $(DATE) - destroying cluster)
-	@kind delete cluster --name my-cluster
+	@kind delete cluster --name pi5
 
 #################### TERRAFORM ####################
 .PHONY: terraform

@@ -25,8 +25,10 @@ ingress:
 #   service: hello_world
 
 # Send traffic to the kubernetes API server
-- hostname: k8s.lucascajal.com
-  service: tcp://kubernetes.default.svc.cluster.local:443
+- hostname: k8s-api.lucascajal.com
+  service: https://kubernetes.default.svc
+  originRequest:
+    noTLSVerify: true
 
 # Send all subdomains to ingress controller.
 # - hostname: "*.lucascajal.com"

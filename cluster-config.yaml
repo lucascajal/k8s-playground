@@ -16,12 +16,13 @@ nodes:
           - "raspberrypi5.local"
           - "127.0.0.1"
           - "0.0.0.0"
+          - "k8s-api.lucascajal.com"
         extraArgs:
           # OIDC related flags
           oidc-issuer-url: "https://lucascajal.eu.auth0.com/"
-          oidc-client-id: "SGFmPlbvl2yTpuEhacs8KtSN7ziL2meX"
+          oidc-client-id: "KWdIwT2ckCdAOfRmo54iXHnfotkv4r3r"
           oidc-groups-claim: "lucascajal.com/roles" # Optional, if your provider supports groups
-          # oidc-username-claim: "email"  # Use "sub" or "email" depending on your provider
+          oidc-username-claim: "sub"  # Use "sub" or "email" depending on your provider
           # oidc-ca-file: "/etc/kubernetes/pki/ca.crt" # Optional, if needed
   extraPortMappings:
     - containerPort: 6443
