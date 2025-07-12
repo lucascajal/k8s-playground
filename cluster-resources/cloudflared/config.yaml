@@ -33,6 +33,9 @@ ingress:
 - hostname: k8s.lucascajal.com
   service: tcp://kubernetes.default.svc.cluster.local:443
 
+- hostname: hello.lucascajal.com
+  service: hello_world
+
 # - hostname: api.k8s.lucascajal.com
 #   service: https://kubernetes.default.svc.cluster.local
 #   originRequest:
