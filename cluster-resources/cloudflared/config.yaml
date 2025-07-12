@@ -29,11 +29,15 @@ ingress:
   service: https://kubernetes.default.svc.cluster.local
   originRequest:
     noTLSVerify: true  # Skip origin certificate validation
+    originServerName: kubernetes.default.svc.cluster.local
+    httpHostHeader: kubernetes.default.svc.cluster.local
 
 - hostname: api-2.k8s.lucascajal.com
   service: https://10.96.0.1:443
   originRequest:
     caPool: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    originServerName: kubernetes.default.svc.cluster.local
+    httpHostHeader: kubernetes.default.svc.cluster.local
 
 - hostname: k8s.lucascajal.com
   service: tcp://kubernetes.default.svc:443
