@@ -27,6 +27,8 @@ ingress:
 # Send traffic to the kubernetes API server
 - hostname: api.k8s.lucascajal.com
   service: https://kubernetes.default.svc
+  originRequest:
+    noTLSVerify: true  # Skip origin certificate validation
 
 - hostname: k8s.lucascajal.com
   service: tcp://kubernetes.default.svc.cluster.local:443
