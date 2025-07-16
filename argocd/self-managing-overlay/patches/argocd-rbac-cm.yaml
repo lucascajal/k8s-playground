@@ -13,4 +13,4 @@ data:
     g, k8s-argocd-readers, role:readonly
   policy.default: role:readonly
   # essential to get argo to use groups for RBAC:
-  scopes: '[http://lucascajal.com/groups, email]'
+  scopes: '[lucascajal.com/roles]'
