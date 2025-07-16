@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: argocd-cm
 data:
-  admin.enabled: "true" # Disable default admin user
+  admin.enabled: "false" # Disable default admin user
   application.instanceLabelKey: argocd.argoproj.io/instance
   url: https://argocd.lucascajal.com
   oidc.config: |
