@@ -6,8 +6,6 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "120"
 spec:
-  syncPolicy:
-    preserveResourcesOnDeletion: true
   generators:
     - list:
         elements:
