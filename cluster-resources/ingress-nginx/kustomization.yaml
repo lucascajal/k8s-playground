@@ -56,10 +56,10 @@ patches:
   #       path: /spec/ttlSecondsAfterFinished
 
 
-  - target:
-      kind: Deployment
-      name: ingress-nginx-controller
-    patch: |-
-      - op: add
-        path: /spec/template/spec/containers/0/args/-
-        value: --enable-ssl-passthrough
+  # - target:
+  #     kind: Deployment
+  #     name: ingress-nginx-controller
+  #   patch: |-
+  #     - op: add
+  #       path: /spec/template/spec/containers/0/args/-
+  #       value: --enable-ssl-passthrough
