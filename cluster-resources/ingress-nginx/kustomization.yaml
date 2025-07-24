@@ -4,3 +4,53 @@ kind: Kustomization
 
 resources:
   - https://raw.githubusercontent.com/kubernetes/ingress-nginx/refs/tags/controller-v1.13.0/deploy/static/provider/kind/deploy.yaml
+
+patches:
+  - target: # Set it to CLusterIP as the cluster is not exposed, with all traffic going through cloudflared
+      kind: Service
+      name: ingress-nginx-controller
+    patch: |-
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: ingress-nginx-controller
+      spec:
+        type: ClusterIP
+
+  # Fix for missing jobs after they complete due to the ttlSecondsAfterFinished: 0
+  # Option 1: Use hooks (actually removes them using ArgoCD, but runs on every sync op)
+  - target:
+      kind: Job
+      name: ingress-nginx-admission-create
+    patch: |-
+      apiVersion: batch/v1
+      kind: Job
+      metadata:
+        name: ingress-nginx-admission-create
+        annotations:
+          argocd.argoproj.io/hook: Sync
+          argocd.argoproj.io/hook-delete-policy: HookSucceeded
+  - target:
+      kind: Job
+      name: ingress-nginx-admission-patch
+    patch: |-
+      apiVersion: batch/v1
+      kind: Job
+      metadata:
+        name: ingress-nginx-admission-patch
+        annotations:
+          argocd.argoproj.io/hook: Sync
+          argocd.argoproj.io/hook-delete-policy: HookSucceeded
+  # Option 2: Remove TTL (does not remove the job, it stays indefinitely in the cluster)
+  # - target:
+  #     kind: Job
+  #     name: ingress-nginx-admission-create
+  #   patch: |-
+  #     - op: remove
+  #       path: /spec/ttlSecondsAfterFinished
+  # - target:
+  #     kind: Job
+  #     name: ingress-nginx-admission-patch
+  #   patch: |-
+  #     - op: remove
+  #       path: /spec/ttlSecondsAfterFinished
