@@ -1,46 +1,20 @@
-# Following https://argo-cd.readthedocs.io/en/release-2.14/operator-manual/ingress/
+# Following https://argo-cd.readthedocs.io/en/release-3.0/operator-manual/ingress/#kubernetesingress-nginx
 
-# HTTP/HTTPS Ingress
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: argocd-server-http-ingress
-  namespace: argocd
-  annotations:
-    # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-spec:
-  ingressClassName: nginx
-  rules:
-  - http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: argocd-server
-            port:
-              name: http
-    host: argocd.lucascajal.com
-  # tls:
-  # - hosts:
-  #   - argocd.lucascajal.com
-  #   secretName: argocd-ingress-http
-
+# Option 1: SSL-Passthrough
 ---
-# gRPC Ingress
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: argocd-server-grpc-ingress
+  name: argocd-server-ingress
   namespace: argocd
   annotations:
-    nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
 spec:
   ingressClassName: nginx
   rules:
-  - http:
+  - host: argocd.lucascajal.com
+    http:
       paths:
       - path: /
         pathType: Prefix
@@ -49,8 +23,90 @@ spec:
             name: argocd-server
             port:
               name: https
-    host: grpc.argocd.lucascajal.com
-  # tls:
-  # - hosts:
-  #   - grpc.argocd.lucascajal.com
-  #   secretName: argocd-ingress-grpc
+# # SSL-Passthrough with cert-manager and Let's Encrypt
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: argocd-server-ingress
+#   namespace: argocd
+#   annotations:
+#     cert-manager.io/cluster-issuer: letsencrypt-prod
+#     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+#     # If you encounter a redirect loop or are getting a 307 response code
+#     # then you need to force the nginx ingress to connect to the backend using HTTPS.
+#     #
+#     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+# spec:
+#   ingressClassName: nginx
+#   rules:
+#   - host: argocd.lucascajal.com
+#     http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: argocd-server
+#             port:
+#               name: https
+#   tls:
+#   - hosts:
+#     - argocd.lucascajal.com
+#     secretName: argocd-server-tls # as expected by argocd-server
+
+# # Option 2: SSL Termination at Ingress Controller
+# # HTTP/HTTPS Ingress
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: argocd-server-http-ingress
+#   namespace: argocd
+#   annotations:
+#     # nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+#     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+#     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+# spec:
+#   ingressClassName: nginx
+#   rules:
+#   - http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: argocd-server
+#             port:
+#               name: http
+#     host: argocd.lucascajal.com
+#   # tls:
+#   # - hosts:
+#   #   - argocd.lucascajal.com
+#   #   secretName: argocd-ingress-http
+# ---
+# # gRPC Ingress
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: argocd-server-grpc-ingress
+#   namespace: argocd
+#   annotations:
+#     nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+# spec:
+#   ingressClassName: nginx
+#   rules:
+#   - http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: argocd-server
+#             port:
+#               name: https
+#     host: grpc.argocd.lucascajal.com
+#   # tls:
+#   # - hosts:
+#   #   - grpc.argocd.lucascajal.com
+#   #   secretName: argocd-ingress-grpc
