@@ -19,38 +19,38 @@ patches:
 
   # Fix for missing jobs after they complete due to the ttlSecondsAfterFinished: 0
   # Option 1: Use hooks (actually removes them using ArgoCD, but runs on every sync op)
-  - target:
-      kind: Job
-      name: ingress-nginx-admission-create
-    patch: |-
-      apiVersion: batch/v1
-      kind: Job
-      metadata:
-        name: ingress-nginx-admission-create
-        annotations:
-          argocd.argoproj.io/hook: PostSync
-          argocd.argoproj.io/hook-delete-policy: HookSucceeded
-  - target:
-      kind: Job
-      name: ingress-nginx-admission-patch
-    patch: |-
-      apiVersion: batch/v1
-      kind: Job
-      metadata:
-        name: ingress-nginx-admission-patch
-        annotations:
-          argocd.argoproj.io/hook: PostSync
-          argocd.argoproj.io/hook-delete-policy: HookSucceeded
-  # Option 2: Remove TTL (does not remove the job, it stays indefinitely in the cluster)
   # - target:
   #     kind: Job
   #     name: ingress-nginx-admission-create
   #   patch: |-
-  #     - op: remove
-  #       path: /spec/ttlSecondsAfterFinished
+  #     apiVersion: batch/v1
+  #     kind: Job
+  #     metadata:
+  #       name: ingress-nginx-admission-create
+  #       annotations:
+  #         argocd.argoproj.io/hook: PostSync
+  #         argocd.argoproj.io/hook-delete-policy: HookSucceeded
   # - target:
   #     kind: Job
   #     name: ingress-nginx-admission-patch
   #   patch: |-
-  #     - op: remove
-  #       path: /spec/ttlSecondsAfterFinished
+  #     apiVersion: batch/v1
+  #     kind: Job
+  #     metadata:
+  #       name: ingress-nginx-admission-patch
+  #       annotations:
+  #         argocd.argoproj.io/hook: PostSync
+  #         argocd.argoproj.io/hook-delete-policy: HookSucceeded
+  # Option 2: Remove TTL (does not remove the job, it stays indefinitely in the cluster)
+  - target:
+      kind: Job
+      name: ingress-nginx-admission-create
+    patch: |-
+      - op: remove
+        path: /spec/ttlSecondsAfterFinished
+  - target:
+      kind: Job
+      name: ingress-nginx-admission-patch
+    patch: |-
+      - op: remove
+        path: /spec/ttlSecondsAfterFinished
