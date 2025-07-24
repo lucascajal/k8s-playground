@@ -54,3 +54,46 @@ patches:
   #   patch: |-
   #     - op: remove
   #       path: /spec/ttlSecondsAfterFinished
+
+  - target:
+      kind: Deployment
+      name: ingress-nginx-controller
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: --enable-ssl-passthrough
+
+  # - target:
+  #     kind: Deployment
+  #     name: ingress-nginx-controller
+  #   patch: |-
+  #     apiVersion: apps/v1
+  #     kind: Deployment
+  #     metadata:
+  #       name: ingress-nginx-controller
+  #     spec:
+  #       template:
+  #         spec:
+  #           containers:
+  #           - name: controller
+  #             args:
+  #               - /nginx-ingress-controller
+  #               - --election-id=ingress-controller-leader
+  #               - --controller-class=k8s.io/ingress-nginx
+  #               - --ingress-class=nginx
+  #               - --configmap=$(POD_NAMESPACE)/ingress-nginx-controller
+  #               - --validating-webhook=:8443
+  #               - --validating-webhook-certificate=/usr/local/certificates/cert
+  #               - --validating-webhook-key=/usr/local/certificates/key
+  #               - --enable-ssl-passthrough
+
+  #               - /nginx-ingress-controller
+  #               - --election-id=ingress-nginx-leader
+  #               - --controller-class=k8s.io/ingress-nginx
+  #               - --ingress-class=nginx
+  #               - --configmap=$(POD_NAMESPACE)/ingress-nginx-controller
+  #               - --validating-webhook=:8443
+  #               - --validating-webhook-certificate=/usr/local/certificates/cert
+  #               - --validating-webhook-key=/usr/local/certificates/key
+  #               - --watch-ingress-without-class=true
+  #               - --publish-status-address=localhost
