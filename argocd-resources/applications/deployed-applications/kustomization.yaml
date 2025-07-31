@@ -8,3 +8,4 @@ resources:
   # - migration-helper.yaml
   - newsreaders.yaml
   - photography-web.yaml
+  - surf-alert.yaml
