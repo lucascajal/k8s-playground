@@ -6,4 +6,5 @@ namespace: argocd
 resources:
   - ../base
   - ingress.yaml
-  - externalsecret.yaml
+  - externalsecret_auth0.yaml
+  - externalsecret_repositories.yaml
