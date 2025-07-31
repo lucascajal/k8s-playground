@@ -69,4 +69,4 @@ argocd_creds: ## Get ArgoCD admin login
 argocd_delete: ## Delete ArgoCD
 	$(info $(DATE) - deleting up ArgoCD)
 	@kubectl delete -k argocd-resources/
-	@kubectl delete -k argocd/
+	@kubectl delete -k argocd/base/
