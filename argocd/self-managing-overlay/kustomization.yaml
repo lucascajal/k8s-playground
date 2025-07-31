@@ -7,8 +7,3 @@ resources:
   - ../base
   - ingress.yaml
   - externalsecret.yaml
-
-patches:
-  - path: patches/argocd-cm.yaml
-  - path: patches/argocd-cmd-params-cm.yaml
-  - path: patches/argocd-rbac-cm.yaml
