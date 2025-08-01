@@ -31,6 +31,11 @@ variable "bitwarden_token" {
   type        = string
   sensitive   = true
 }
+variable "bitwarden_project_id" {
+  description = "Bitwarden project"
+  type        = string
+  sensitive   = true
+}
 
 # OIDC vars
 variable "auth0_oidc_client_id" {

@@ -6,7 +6,8 @@ cloudflare_api_token              = "<cloudflare-api-token>"
 cloudflare_cert_manager_api_token = "<cloudflare-api-token>"
 
 # Bitwarden vars
-bitwarden_token = "<bitwarden-access-token>"
+bitwarden_token         = "<bitwarden-access-token>"
+bitwarden_project_id    = "<bitwarden-project>"
 
 # OIDC vars
 auth0_oidc_client_id       = "<auth0-dashboard-client-id>"

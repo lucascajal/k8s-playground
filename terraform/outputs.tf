@@ -1,9 +1,9 @@
 output "bitwarden_project_id" {
   sensitive = true
-  value     = bitwarden_project.bitwarden_project.id
+  value     = data.bitwarden_project.k8s_cluster_tf.id
 }
 output "bitwarden_project_name" {
-  value = bitwarden_project.bitwarden_project.name
+  value = data.bitwarden_project.k8s_cluster_tf.name
 }
 output "bitwarden_token" {
   sensitive = true
