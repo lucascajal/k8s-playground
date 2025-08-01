@@ -1,21 +1,25 @@
 # Cloudflare vars
+cloudflare_domain                 = "<cloudflare-domain>"
 cloudflare_zone_id                = "<cloudflare-zone-id>"
 cloudflare_account_id             = "<cloudflare-account-id>"
 cloudflare_api_token              = "<cloudflare-api-token>"
-cloudflare_domain                 = "<cloudflare-domain>"
 cloudflare_cert_manager_api_token = "<cloudflare-api-token>"
 
 # Bitwarden vars
 bitwarden_token = "<bitwarden-access-token>"
 
-# Auth0 vars
+# OIDC vars
 auth0_oidc_client_id       = "<auth0-dashboard-client-id>"
 auth0_oidc_client_secret   = "<auth0-dashboard-client-secret>"
 auth0_oidc_cookie_secret   = "<auth0-cookie-secret>"
-auth0_argocd_client_id     = "<auth0-argocd-client-id>"
-auth0_argocd_client_secret = "<auth0-argocd-client-secret>"
 
 # Container registry vars
 registry_url      = "registry.gitlab.com"
 registry_username = "<gitlab-username>"
 registry_password = "<gitlab-token>"
+
+# ArgoCD vars
+auth0_argocd_client_id          = "<auth0-argocd-client-id>"
+auth0_argocd_client_secret      = "<auth0-argocd-client-secret>"
+argocd_github_repos_base_url    = "<argocd-github-repos-base-url>"
+argocd_github_repos_read_token  = "<argocd-github-repos-read>"

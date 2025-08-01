@@ -32,7 +32,7 @@ variable "bitwarden_token" {
   sensitive   = true
 }
 
-# Auth0 variables
+# OIDC vars
 variable "auth0_oidc_client_id" {
   description = "Auth0 client ID for Kubernetes dashboard"
   type        = string
@@ -48,16 +48,6 @@ variable "auth0_oidc_cookie_secret" {
   type        = string
   sensitive   = true
 }
-variable "auth0_argocd_client_id" {
-  description = "Auth0 client ID for ArgoCD"
-  type        = string
-  sensitive   = true
-}
-variable "auth0_argocd_client_secret" {
-  description = "Auth0 client secret for ArgoCD"
-  type        = string
-  sensitive   = true
-}
 
 # Container Registry variables
 variable "registry_url" {
@@ -70,4 +60,26 @@ variable "registry_username" {
 variable "registry_password" {
   type      = string
   sensitive = true
+}
+
+# ArgoCD vars
+variable "auth0_argocd_client_id" {
+  description = "Auth0 client ID for ArgoCD"
+  type        = string
+  sensitive   = true
+}
+variable "auth0_argocd_client_secret" {
+  description = "Auth0 client secret for ArgoCD"
+  type        = string
+  sensitive   = true
+}
+variable "argocd_github_repos_base_url" {
+  description = "Github repositories URL prefix for private repo read template"
+  type        = string
+  sensitive   = true
+}
+variable "argocd_github_repos_read_token" {
+  description = "Github repositories token for private repo read template"
+  type        = string
+  sensitive   = true
 }
