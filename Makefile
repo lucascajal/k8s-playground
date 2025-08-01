@@ -26,9 +26,13 @@ cluster: ## Creates Kind Cluster. Following https://kind.sigs.k8s.io/docs/user/i
 # sudo cat /root/.kube/config > ~/.kube/config
 
 .PHONY: destroy
-destroy: ## Destroys Kind Cluster
+destroy: ## Destroys Kind Cluster & terraform resources
+	$(info $(DATE) - destroying ArgoCD resources)
 	$(info $(DATE) - destroying cluster)
 	@kind delete cluster --name pi5
+	@sleep 30
+	$(info $(DATE) - destroying terraform resources)
+	@terraform -chdir=terraform destroy -auto-approve
 
 #################### TERRAFORM ####################
 .PHONY: terraform
