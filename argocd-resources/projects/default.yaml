@@ -17,3 +17,4 @@ spec:
   - https://charts.jetstack.io # cert-manager
   - https://charts.external-secrets.io
   - https://kubernetes-sigs.github.io/metrics-server
+  - https://prometheus-community.github.io/helm-charts

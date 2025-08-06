@@ -104,3 +104,17 @@ resource "bitwarden_secret" "argocd_repository_read_creds" {
     "password" = var.argocd_github_repos_read_token
   })
 }
+
+# Prometheus & Grafana vars
+resource "bitwarden_secret" "auth0_grafana_client_id" {
+  key        = "grafana-clientID"
+  value      = var.auth0_grafana_client_id
+  project_id = data.bitwarden_project.k8s_cluster_tf.id
+  note       = "Auth0 clientID for grafana portal"
+}
+resource "bitwarden_secret" "auth0_grafana_client_secret" {
+  key        = "grafana-clientSecret"
+  value      = var.auth0_grafana_client_secret
+  project_id = data.bitwarden_project.k8s_cluster_tf.id
+  note       = "Auth0 clientSecret for grafana portal"
+}
