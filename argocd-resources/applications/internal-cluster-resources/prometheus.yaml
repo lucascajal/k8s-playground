@@ -1,0 +1,95 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: prometheus-operator
+  # annotations:
+  #   argocd.argoproj.io/sync-wave: "10"
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: in-cluster
+  template:
+    metadata:
+      name: prometheus-operator
+    spec:
+      destination:
+        name: "{{cluster}}"
+        namespace: prometheus-system
+      project: default
+      sources:
+      - chart: kube-prometheus-stack
+        repoURL: https://prometheus-community.github.io/helm-charts
+        targetRevision: "75.16.1"
+        helm:
+          releaseName: kube-prometheus-stack
+          values: |
+            crds:
+              enabled: true
+
+            # prometheus:
+            #   ingress:
+            #     enabled: true
+            #     ingressClassName: nginx
+            #     hosts:
+            #       - prometheus.lucascajal.com
+            #     paths:
+            #       - /
+            #     pathType: Prefix
+
+            grafana:
+              envFromSecret: auth0-grafana
+              grafana.ini:
+                server:
+                  root_url: https://grafana.lucascajal.com
+
+                auth:
+                  # enable the login form temporarily to unblock access
+                  disable_login_form: true
+                  # keep auto login off until OAuth is confirmed working
+                  oauth_auto_login: false
+
+                auth.basic:
+                  enabled: false
+
+                auth.generic_oauth:
+                  enabled: true
+                  name: Auth0
+                  allow_sign_up: true
+                  role_attribute_strict: true
+                  use_pkce: true
+                  use_refresh_token: true
+                  auth_url: https://lucascajal.eu.auth0.com/authorize
+                  token_url: https://lucascajal.eu.auth0.com/oauth/token
+                  api_url: https://lucascajal.eu.auth0.com/userinfo
+                  scopes: openid profile email
+                  email_attribute_path: email
+                  login_attribute_path: email
+                  name_attribute_path: name
+                  # Map Auth0 roles to Grafana roles
+                  role_attribute_path: >-
+                    contains("lucascajal.com/roles", 'grafana-admin') && 'Admin' ||
+                    contains("lucascajal.com/roles", 'grafana-editor') && 'Editor' ||
+                    contains("lucascajal.com/roles", 'grafana-viewer') && 'Viewer' ||
+                    'None'
+                  allow_assign_grafana_admin: true
+
+            #   ingress:
+            #     enabled: true
+            #     ingressClassName: nginx
+            #     hosts:
+            #       - grafana.lucascajal.com
+            #     path: /
+            #     pathType: Prefix
+      - path: cluster-resources/prometheus
+        repoURL: https://github.com/lucascajal/k8s-playground.git
+        targetRevision: HEAD
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - CreateNamespace=true
+          # - Replace=true
+          - ServerSideApply=true

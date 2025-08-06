@@ -88,3 +88,15 @@ variable "argocd_github_repos_read_token" {
   type        = string
   sensitive   = true
 }
+
+# Prometheus & Grafana vars
+variable "auth0_grafana_client_id" {
+  description = "Auth0 client ID for Grafana"
+  type        = string
+  sensitive   = true
+}
+variable "auth0_grafana_client_secret" {
+  description = "Auth0 client secret for Grafana"
+  type        = string
+  sensitive   = true
+}
