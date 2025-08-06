@@ -31,7 +31,7 @@ destroy: ## Destroys Kind Cluster & terraform resources
 	$(info $(DATE) - destroying cluster)
 	@kind delete cluster --name pi5
 	@sleep 30
-	$(info $(DATE) - destroying terraform resources)
+	@echo "$(shell date -u +'%Y-%m-%dT%H:%M:%SZ') - destroying terraform resources"
 	@terraform -chdir=terraform destroy -auto-approve
 
 #################### TERRAFORM ####################
