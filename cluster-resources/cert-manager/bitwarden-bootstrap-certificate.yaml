@@ -24,6 +24,6 @@ spec:
     encoding: PKCS8
     size: 2048
   issuerRef:
-    name: bitwarden-bootstrap-issuer
+    name: internal-self-signed
     kind: ClusterIssuer
     group: cert-manager.io
