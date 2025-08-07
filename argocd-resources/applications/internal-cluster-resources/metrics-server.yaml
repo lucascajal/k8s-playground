@@ -45,6 +45,14 @@ spec:
               - --kubelet-insecure-tls
               # pick the right node address (e.g. InternalIP first)
               - --kubelet-preferred-address-types=InternalIP,Hostname,ExternalIP
+
+            resources:
+              requests:
+                cpu: 15m
+                memory: 50Mi
+              limits:
+                cpu: 50m
+                memory: 100Mi
       syncPolicy:
         automated:
           selfHeal: true
