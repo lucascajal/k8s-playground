@@ -17,6 +17,27 @@ patches:
       spec:
         type: ClusterIP
 
+  - target: # Change the resources request
+      kind: Deployment
+      name: ingress-nginx-controller
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: ingress-nginx-controller
+      spec:
+        template:
+          spec:
+            containers:
+              - name: controller
+                resources:
+                  requests:
+                    cpu: "30m"
+                    memory: "60Mi"
+                  limits:
+                    cpu: "200m"
+                    memory: "256Mi"
+
   # Fix for missing jobs after they complete due to the ttlSecondsAfterFinished: 0
   # Option 1: Use hooks (actually removes them using ArgoCD, but runs on every sync op)
   - target:
