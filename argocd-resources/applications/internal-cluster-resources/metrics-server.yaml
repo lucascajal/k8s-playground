@@ -1,0 +1,54 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: metrics-server
+  # annotations:
+  #   argocd.argoproj.io/sync-wave: "10"
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: in-cluster
+  template:
+    metadata:
+      name: metrics-server
+    spec:
+      destination:
+        name: "{{cluster}}"
+        namespace: metrics-server
+      project: default
+      sources:
+      - chart: metrics-server
+        repoURL: https://kubernetes-sigs.github.io/metrics-server
+        targetRevision: "3.13.0"
+        helm:
+          releaseName: metrics-server
+          # override upstream values here:
+          values: |
+            # Ensure the APIService sees your Service port
+            service:
+              port: 443
+              targetPort: https
+              ports:
+                - name: https
+                  port: 443
+                  targetPort: https
+
+            # Create the APIService object
+            apiService:
+              create: true
+
+            # Pass flags to metrics-server binary
+            args:
+              # skip kubelet TLS verification (nodes' certs only have IP SANs)
+              - --kubelet-insecure-tls
+              # pick the right node address (e.g. InternalIP first)
+              - --kubelet-preferred-address-types=InternalIP,Hostname,ExternalIP
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - CreateNamespace=true
+          # - Replace=true
