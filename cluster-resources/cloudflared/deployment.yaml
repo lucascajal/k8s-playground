@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: cloudflared
-        image: cloudflare/cloudflared:2024.10.1
+        image: cloudflare/cloudflared:2025.7.0
         args:
         - tunnel
         # Points cloudflared to the config file, which configures what
@@ -24,6 +24,13 @@ spec:
         - --config
         - /etc/cloudflared/config/config.yaml
         - run
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "60Mi"
+          limits:
+            cpu: "50m"
+            memory: "60Mi"
         livenessProbe:
           httpGet:
             # Cloudflared has a /ready endpoint which returns 200 if and only if
