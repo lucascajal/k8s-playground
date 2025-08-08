@@ -4,3 +4,43 @@ metadata:
   name: argocd-cmd-params-cm
 data:
   server.insecure: "true"
+
+  ### Resource consumption reduction. See https://argo-cd.readthedocs.io/en/release-3.0/operator-manual/argocd-cmd-params-cm-yaml/
+  
+  ## Controller Properties
+  # Number of application status processors (default 20)
+  controller.status.processors: "4"
+  # Number of application operation processors (default 10)
+  controller.operation.processors: "2"
+  # Specifies exponential backoff timeout parameters between application self heal attempts
+  controller.self.heal.timeout.seconds: "5"
+  controller.self.heal.backoff.factor: "4"
+  controller.self.heal.backoff.cap.seconds: "600"
+  # Specifies a sync timeout for applications. "0" means no timeout (default "0")
+  controller.sync.timeout.seconds: "600"
+  # Number of allowed concurrent kubectl fork/execs. Any value less than 1 means no limit.
+  controller.kubectl.parallelism.limit: "8"
+  # The maximum number of retries for each request
+  controller.k8sclient.retry.max: "1"
+  # The initial backoff delay on the first retry attempt in ms. Subsequent retries will double this backoff time up to a maximum threshold
+  controller.k8sclient.retry.base.backoff: "200"
+  # Grace period in seconds for ignoring consecutive errors while communicating with repo server.
+  controller.repo.error.grace.period.seconds: "300"
+  # This sets the interval at which the controller's cluster cache processes a batch of cluster events. A lower value
+  # will increase the speed at which Argo CD becomes aware of external cluster state. A higher value will reduce cluster
+  # cache lock contention and better handle high-churn clusters.
+  controller.cluster.cache.events.processing.interval: "500ms"
+
+  ## Server properties
+  # Number of webhook requests processed concurrently (default 50)
+  server.webhook.parallelism.limit: "15"
+
+  ## Repo-server properties
+  # Number of concurrent git ls-remote requests. Any value less than 1 means no limit.
+  reposerver.git.lsremote.parallelism.limit: "10"
+
+  ## ApplicationSet Controller Properties
+  # Max concurrent reconciliation limit for the controller (default 10)
+  applicationsetcontroller.concurrent.reconciliations.max: "3"
+  # Number of webhook requests processed concurrently (default 50)
+  applicationsetcontroller.webhook.parallelism.limit: "15"
