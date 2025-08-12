@@ -1,0 +1,23 @@
+# API server certificate SANs (omit 0.0.0.0; it’s not useful as a SAN)
+tls-san:
+  - raspberrypi5.local
+  - 127.0.0.1
+  - k8s-api.lucascajal.com
+  - 192.168.1.140 # Local IP of server node so agents can join
+
+# Optional: keep compatibility with your old label
+node-label:
+  - "ingress-ready=true"
+
+# Pass OIDC flags to the embedded kube-apiserver
+kube-apiserver-arg:
+  - "oidc-issuer-url=https://lucascajal.eu.auth0.com/"
+  - "oidc-client-id=KWdIwT2ckCdAOfRmo54iXHnfotkv4r3r"
+  - "oidc-groups-claim=lucascajal.com/roles"
+  - "oidc-username-claim=sub"
+#  - "oidc-ca-file=/path/to/ca.crt"    # Only if your issuer needs a custom CA
+
+disable:
+  - traefik # Disable Traefik as we will use Nginx Ingress Controller
+  - servicelb # not needed as we use cloudflared tunnel for ingress
+  - metrics-server # If used, will be installed by ArgoCD, TODO: compare resource consumption between this and the one in ArgoCD
