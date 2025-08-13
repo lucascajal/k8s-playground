@@ -28,26 +28,84 @@ spec:
             crds:
               enabled: true
 
-            # prometheus:
-            #   ingress:
-            #     enabled: true
-            #     ingressClassName: nginx
-            #     hosts:
-            #       - prometheus.lucascajal.com
-            #     paths:
-            #       - /
-            #     pathType: Prefix
+            # Keep kubelet/cAdvisor on (dashboards need container metrics), but trim extras.
+            kubelet:
+              serviceMonitor:
+                # Still scrape /metrics and /metrics/cadvisor for dashboards.
+                cAdvisor: true
+                probes: false        # drop /metrics/probes (not needed)
+                resource: false      # drop /metrics/resource (not needed)
+                metricRelabelings:
+                  # Drop very high-cardinality labels that dashboards don't use.
+                  - action: labeldrop
+                    regex: (container_id|container_image|container_image_id|image|pod_uid)
+
+            # Disable Alertmanager to save RAM/CPU.
+            alertmanager:
+              enabled: false
+
+            prometheus:
+              # ingress:
+              #   enabled: true
+              #   ingressClassName: nginx
+              #   hosts:
+              #     - prometheus.lucascajal.com
+              #   paths:
+              #     - /
+              #   pathType: Prefix
+
+              prometheusSpec:
+                scrapeInterval: 60s
+                evaluationInterval: 60s
+                retention: 12h
+                retentionSize: 1GiB
+                walCompression: true
+                # Limit per-target samples to prevent accidental blowups.
+                enforcedSampleLimit: 5000
+                resources:
+                  requests:
+                    cpu: 100m
+                    memory: 256Mi
+                  limits:
+                    cpu: 500m
+                    memory: 512Mi
 
             grafana:
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 160Mi
+                limits:
+                  cpu: 300m
+                  memory: 384Mi
+
+              # Disable features that add overhead.
+              imageRenderer:
+                enabled: false
+              unified_alerting:
+                enabled: false
+
+              sidecar:
+                dashboards:
+                  enabled: true
+                datasources:
+                  enabled: true
+
               envFromSecret: auth0-grafana
+
               grafana.ini:
+                # Reduce query pressure and background work.
+                dashboards:
+                  min_refresh_interval: 30s
+                analytics:
+                  reporting_enabled: false
+                  check_for_updates: false
+
                 server:
                   root_url: https://grafana.lucascajal.com
 
                 auth:
-                  # enable the login form temporarily to unblock access
                   disable_login_form: true
-                  # keep auto login off until OAuth is confirmed working
                   oauth_auto_login: false
 
                 auth.basic:
