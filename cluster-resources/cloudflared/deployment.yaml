@@ -7,15 +7,18 @@ spec:
   selector:
     matchLabels:
       app: cloudflared
-  replicas: 1 # You could also consider elastic scaling for this deployment
+  replicas: 4 # You could also consider elastic scaling for this deployment
   template:
     metadata:
       labels:
         app: cloudflared
     spec:
+      imagePullSecrets:
+      - name: container-registry-credentials # Secret containing the GitLab registry credentials
       containers:
       - name: cloudflared
-        image: cloudflare/cloudflared:2025.7.0
+        # image: cloudflare/cloudflared:2025.7.0
+        image: registry.gitlab.com/lucascajal1/k8s/cloudflared:2025.8.0
         args:
         - tunnel
         # Points cloudflared to the config file, which configures what
@@ -31,15 +34,31 @@ spec:
           limits:
             cpu: "50m"
             memory: "60Mi"
+        ports:
+        - name: liveness-port
+          containerPort: 2000
+        startupProbe:
+          httpGet:
+            path: /ready
+            port: liveness-port
+          failureThreshold: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: liveness-port
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          failureThreshold: 2
         livenessProbe:
           httpGet:
             # Cloudflared has a /ready endpoint which returns 200 if and only if
             # it has an active connection to the edge.
             path: /ready
-            port: 2000
-          failureThreshold: 1
-          initialDelaySeconds: 10
-          periodSeconds: 10
+            port: liveness-port
+          initialDelaySeconds: 30
+          periodSeconds: 15
+          failureThreshold: 5
         volumeMounts:
         - name: config
           mountPath: /etc/cloudflared/config
@@ -67,3 +86,8 @@ spec:
           items:
           - key: config.yaml
             path: config.yaml
+      tolerations: # For taint architecture=armv7:NoSchedule
+      - key: "architecture"
+        operator: "Equal"
+        value: "armv7"
+        effect: "NoSchedule"
