@@ -7,15 +7,18 @@ spec:
   selector:
     matchLabels:
       app: cloudflared
-  replicas: 1 # You could also consider elastic scaling for this deployment
+  replicas: 2 # You could also consider elastic scaling for this deployment
   template:
     metadata:
       labels:
         app: cloudflared
     spec:
+      imagePullSecrets:
+      - name: container-registry-credentials # Secret containing the GitLab registry credentials
       containers:
       - name: cloudflared
-        image: cloudflare/cloudflared:2025.7.0
+        # image: cloudflare/cloudflared:2025.7.0
+        image: registry.gitlab.com/lucascajal1/k8s/cloudflared:2025.8.0
         args:
         - tunnel
         # Points cloudflared to the config file, which configures what
