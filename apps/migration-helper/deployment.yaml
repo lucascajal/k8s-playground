@@ -22,6 +22,11 @@ spec:
           value: "https://photography.lucascajal.com"
         ports:
         - containerPort: 80
+      tolerations: # For taint architecture=armv7:NoSchedule
+      - key: "architecture"
+        operator: "Equal"
+        value: "armv7"
+        effect: "NoSchedule"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -47,6 +52,11 @@ spec:
           value: "https://newsreader.lucascajal.com/vanguardia"
         ports:
         - containerPort: 80
+      tolerations: # For taint architecture=armv7:NoSchedule
+      - key: "architecture"
+        operator: "Equal"
+        value: "armv7"
+        effect: "NoSchedule"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -72,3 +82,8 @@ spec:
           value: "https://newsreader.lucascajal.com/ara"
         ports:
         - containerPort: 80
+      tolerations: # For taint architecture=armv7:NoSchedule
+      - key: "architecture"
+        operator: "Equal"
+        value: "armv7"
+        effect: "NoSchedule"
