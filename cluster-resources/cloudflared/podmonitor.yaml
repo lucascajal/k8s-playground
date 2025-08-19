@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: cloudflared
+  namespace: prometheus-system
+  labels:
+    # kube-prometheus-stack discovers only ServiceMonitors/PodMonitors
+    # carrying this label by default.
+    release: kube-prometheus-stack
+spec:
+  # Look for matching pods in any namespace
+  namespaceSelector:
+    any: true
+  # Use the pod label 'app' as the Prometheus job label
+  jobLabel: app
+  selector:
+    matchLabels:
+      app: cloudflared
+  podMetricsEndpoints:
+    - port: metrics-port
+      path: /metrics
+      interval: 30s
+      scrapeTimeout: 10s

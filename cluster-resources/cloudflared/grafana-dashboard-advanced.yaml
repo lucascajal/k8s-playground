@@ -1,0 +1,329 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-cloudflared-advanced
+  namespace: prometheus-system
+  labels:
+    grafana_dashboard: "1"
+data:
+  cloudflared-advanced.json: |
+    {
+      "title": "Cloudflared advanced",
+      "tags": ["cloudflared","tunnel","kubernetes","networking","ingress"],
+      "timezone": "browser",
+      "time": { "from": "now-24h", "to": "now" },
+      "refresh": "30s",
+      "schemaVersion": 38,
+      "version": 2,
+      "templating": {
+        "list": [
+          {
+            "type": "query",
+            "name": "namespace",
+            "label": "Namespace",
+            "datasource": "Prometheus",
+            "query": "label_values(up{job=\"cloudflared\"}, namespace)",
+            "hide": 0,
+            "refresh": 1,
+            "includeAll": true,
+            "multi": true
+          },
+          {
+            "type": "query",
+            "name": "node",
+            "label": "Node",
+            "datasource": "Prometheus",
+            "query": "label_values(kube_pod_info{namespace=~\"$namespace\"}, node)",
+            "hide": 0,
+            "refresh": 1,
+            "includeAll": true,
+            "multi": true
+          },
+          {
+            "type": "query",
+            "name": "pod",
+            "label": "Pod",
+            "datasource": "Prometheus",
+            "refresh": 1,
+            "query": "label_values(up{job=\"cloudflared\", namespace=~\"$namespace\"}, pod)",
+            "hide": 0,
+            "includeAll": true,
+            "multi": true
+          },
+          {
+            "type": "query",
+            "name": "edge_location",
+            "label": "Edge Location",
+            "datasource": "Prometheus",
+            "refresh": 1,
+            "query": "label_values(cloudflared_tunnel_server_locations{job=\"cloudflared\"}, edge_location)",
+            "hide": 0,
+            "includeAll": true,
+            "multi": true
+          }
+        ]
+      },
+      "panels": [
+        {
+          "type": "stat",
+          "title": "Targets up",
+          "gridPos": { "x": 0, "y": 0, "w": 4, "h": 4 },
+          "targets": [
+            { "expr": "sum(up{job=\"cloudflared\", namespace=~\"$namespace\", pod=~\"$pod\"})", "refId": "A" }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Pods up by node",
+          "gridPos": { "x": 4, "y": 0, "w": 4, "h": 4 },
+          "options": { "reduceOptions": { "calcs": ["lastNotNull"], "values": false } },
+          "targets": [
+            {
+              "expr": "sum by (node) ( up{job=\"cloudflared\", namespace=~\"$namespace\", pod=~\"$pod\"} * on(pod) group_left(node) kube_pod_info{namespace=~\"$namespace\", pod=~\"$pod\", node=~\"$node\"} )",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Error rate (5m) %",
+          "gridPos": { "x": 8, "y": 0, "w": 4, "h": 4 },
+          "fieldConfig": { "defaults": { "unit": "percent", "decimals": 2 } },
+          "targets": [
+            {
+              "expr": "100 * sum( increase(cloudflared_tunnel_request_errors{job=\"cloudflared\", namespace=~\"$namespace\", pod=~\"$pod\"}[5m]) ) / clamp_min(sum( increase(cloudflared_tunnel_total_requests{job=\"cloudflared\", namespace=~\"$namespace\", pod=~\"$pod\"}[5m]) ), 1)",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "HA connections (sum)",
+          "gridPos": { "x": 12, "y": 0, "w": 4, "h": 4 },
+          "targets": [
+            {
+              "expr": "sum(cloudflared_tunnel_ha_connections{job=\"cloudflared\", namespace=~\"$namespace\", pod=~\"$pod\"})",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Active streams (sum)",
+          "gridPos": { "x": 16, "y": 0, "w": 4, "h": 4 },
+          "targets": [
+            {
+              "expr": "sum(cloudflared_tunnel_active_streams{job=\"cloudflared\", namespace=~\"$namespace\", pod=~\"$pod\"})",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "stat",
+          "title": "Concurrent requests (sum)",
+          "gridPos": { "x": 20, "y": 0, "w": 4, "h": 4 },
+          "targets": [
+            {
+              "expr": "sum(cloudflared_tunnel_concurrent_requests_per_tunnel{job=\"cloudflared\", namespace=~\"$namespace\", pod=~\"$pod\"})",
+              "refId": "A"
+            }
+          ]
+        },
+
+        {
+          "type": "timeseries",
+          "title": "Requests per second by node",
+          "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 },
+          "fieldConfig": { "defaults": { "unit": "ops" } },
+          "targets": [
+            {
+              "expr": "sum by (node) ( rate(cloudflared_tunnel_total_requests{job=\"cloudflared\", namespace=~\"$namespace\", pod=~\"$pod\"}[5m]) * on(pod) group_left(node) kube_pod_info{namespace=~\"$namespace\", pod=~\"$pod\", node=~\"$node\"} )",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Error rate by node (5m, %)",
+          "gridPos": { "x": 12, "y": 4, "w": 12, "h": 8 },
+          "fieldConfig": { "defaults": { "unit": "percent", "decimals": 2 } },
+          "targets": [
+            {
+              "expr": "100 * sum by (node) ( increase(cloudflared_tunnel_request_errors{job=\"cloudflared\", namespace=~\"$namespace\", pod=~\"$pod\"}[5m]) * on(pod) group_left(node) kube_pod_info{namespace=~\"$namespace\", pod=~\"$pod\", node=~\"$node\"} ) / clamp_min(sum by (node) ( increase(cloudflared_tunnel_total_requests{job=\"cloudflared\", namespace=~\"$namespace\", pod=~\"$pod\"}[5m]) * on(pod) group_left(node) kube_pod_info{namespace=~\"$namespace\", pod=~\"$pod\", node=~\"$node\"} ), 1)",
+              "refId": "A"
+            }
+          ]
+        },
+
+        {
+          "type": "timeseries",
+          "title": "QUIC smoothed RTT by pod (ms, colored by node)",
+          "gridPos": { "x": 0, "y": 12, "w": 12, "h": 8 },
+          "fieldConfig": { "defaults": { "unit": "ms" } },
+          "targets": [
+            {
+              "expr": "avg by (pod, node) ( quic_client_smoothed_rtt{job=\"cloudflared\", namespace=~\"$namespace\", pod=~\"$pod\"} * on(pod) group_left(node) kube_pod_info{namespace=~\"$namespace\", pod=~\"$pod\", node=~\"$node\"} )",
+              "refId": "A"
+            }
+          ],
+          "options": { "legend": { "displayMode": "list", "placement": "right" } }
+        },
+        {
+          "type": "timeseries",
+          "title": "QUIC lost packets rate by node (5m)",
+          "gridPos": { "x": 12, "y": 12, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "sum by (node, reason) ( rate(quic_client_lost_packets{job=\"cloudflared\", namespace=~\"$namespace\", pod=~\"$pod\"}[5m]) * on(pod) group_left(node) kube_pod_info{namespace=~\"$namespace\", pod=~\"$pod\", node=~\"$node\"} )",
+              "refId": "A"
+            }
+          ]
+        },
+
+        {
+          "type": "timeseries",
+          "title": "TCP sessions (active gauge by node, total rate)",
+          "gridPos": { "x": 0, "y": 20, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "sum by (node) ( cloudflared_tcp_active_sessions{job=\"cloudflared\", namespace=~\"$namespace\", pod=~\"$pod\"} * on(pod) group_left(node) kube_pod_info{namespace=~\"$namespace\", pod=~\"$pod\", node=~\"$node\"} )",
+              "refId": "A",
+              "legendFormat": "active {{node}}"
+            },
+            {
+              "expr": "sum by (node) ( rate(cloudflared_tcp_total_sessions{job=\"cloudflared\", namespace=~\"$namespace\", pod=~\"$pod\"}[5m]) * on(pod) group_left(node) kube_pod_info{namespace=~\"$namespace\", pod=~\"$pod\", node=~\"$node\"} )",
+              "refId": "B",
+              "legendFormat": "rate {{node}}"
+            }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "UDP sessions (active gauge by node, total rate)",
+          "gridPos": { "x": 12, "y": 20, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "sum by (node) ( cloudflared_udp_active_sessions{job=\"cloudflared\", namespace=~\"$namespace\", pod=~\"$pod\"} * on(pod) group_left(node) kube_pod_info{namespace=~\"$namespace\", pod=~\"$pod\", node=~\"$node\"} )",
+              "refId": "A",
+              "legendFormat": "active {{node}}"
+            },
+            {
+              "expr": "sum by (node) ( rate(cloudflared_udp_total_sessions{job=\"cloudflared\", namespace=~\"$namespace\", pod=~\"$pod\"}[5m]) * on(pod) group_left(node) kube_pod_info{namespace=~\"$namespace\", pod=~\"$pod\", node=~\"$node\"} )",
+              "refId": "B",
+              "legendFormat": "rate {{node}}"
+            }
+          ]
+        },
+
+        {
+          "type": "bargauge",
+          "title": "Current edge locations by node",
+          "gridPos": { "x": 0, "y": 28, "w": 12, "h": 8 },
+          "options": { "orientation": "horizontal" },
+          "targets": [
+            {
+              "expr": "sum by (node, edge_location) ( (cloudflared_tunnel_server_locations{job=\"cloudflared\", namespace=~\"$namespace\", pod=~\"$pod\", edge_location=~\"$edge_location\"} == 1) * on(pod) group_left(node) kube_pod_info{namespace=~\"$namespace\", pod=~\"$pod\", node=~\"$node\"} )",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Concurrent requests per tunnel by pod (node colored)",
+          "gridPos": { "x": 12, "y": 28, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "sum by (pod, node) ( cloudflared_tunnel_concurrent_requests_per_tunnel{job=\"cloudflared\", namespace=~\"$namespace\", pod=~\"$pod\"} * on(pod) group_left(node) kube_pod_info{namespace=~\"$namespace\", pod=~\"$pod\", node=~\"$node\"} )",
+              "refId": "A"
+            }
+          ]
+        },
+
+        {
+          "type": "timeseries",
+          "title": "CPU (rate) by pod with node",
+          "gridPos": { "x": 0, "y": 36, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "sum by (pod, node) ( rate(process_cpu_seconds_total{job=\"cloudflared\", namespace=~\"$namespace\", pod=~\"$pod\"}[5m]) * on(pod) group_left(node) kube_pod_info{namespace=~\"$namespace\", pod=~\"$pod\", node=~\"$node\"} )",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Memory RSS by pod with node",
+          "gridPos": { "x": 12, "y": 36, "w": 12, "h": 8 },
+          "fieldConfig": { "defaults": { "unit": "bytes" } },
+          "targets": [
+            {
+              "expr": "max by (pod, node) ( process_resident_memory_bytes{job=\"cloudflared\", namespace=~\"$namespace\", pod=~\"$pod\"} * on(pod) group_left(node) kube_pod_info{namespace=~\"$namespace\", pod=~\"$pod\", node=~\"$node\"} )",
+              "refId": "A"
+            }
+          ]
+        },
+
+        {
+          "type": "timeseries",
+          "title": "Goroutines",
+          "gridPos": { "x": 0, "y": 44, "w": 12, "h": 8 },
+          "targets": [
+            { "expr": "max by(pod, node) ( go_goroutines{job=\"cloudflared\", namespace=~\"$namespace\", pod=~\"$pod\"} * on(pod) group_left(node) kube_pod_info{namespace=~\"$namespace\", pod=~\"$pod\", node=~\"$node\"} )", "refId": "A" }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "GC pause duration (p95)",
+          "gridPos": { "x": 12, "y": 44, "w": 12, "h": 8 },
+          "fieldConfig": { "defaults": { "unit": "s", "decimals": 3 } },
+          "targets": [
+            { "expr": "max by(pod, node) ( go_gc_duration_seconds{job=\"cloudflared\", quantile=\"0.95\", namespace=~\"$namespace\", pod=~\"$pod\"} * on(pod) group_left(node) kube_pod_info{namespace=~\"$namespace\", pod=~\"$pod\", node=~\"$node\"} )", "refId": "A" }
+          ]
+        },
+
+        {
+          "type": "timeseries",
+          "title": "Scrape errors (Prometheus -> cloudflared, 5m)",
+          "gridPos": { "x": 0, "y": 52, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "sum by (pod, node) ( increase(promhttp_metric_handler_requests_total{job=\"cloudflared\", code!~\"2..\", namespace=~\"$namespace\", pod=~\"$pod\"}[5m]) * on(pod) group_left(node) kube_pod_info{namespace=~\"$namespace\", pod=~\"$pod\", node=~\"$node\"} )",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "type": "timeseries",
+          "title": "Unacknowledged heartbeats (timer retries)",
+          "gridPos": { "x": 12, "y": 52, "w": 12, "h": 8 },
+          "targets": [
+            {
+              "expr": "max by (pod, node) ( cloudflared_tunnel_timer_retries{job=\"cloudflared\", namespace=~\"$namespace\", pod=~\"$pod\"} * on(pod) group_left(node) kube_pod_info{namespace=~\"$namespace\", pod=~\"$pod\", node=~\"$node\"} )",
+              "refId": "A"
+            }
+          ]
+        },
+
+        {
+          "type": "stat",
+          "title": "Version by pod",
+          "gridPos": { "x": 0, "y": 60, "w": 24, "h": 4 },
+          "options": { "reduceOptions": { "calcs": ["lastNotNull"], "values": true } },
+          "targets": [
+            {
+              "expr": "max by (pod, version) ( build_info{job=\"cloudflared\", namespace=~\"$namespace\", pod=~\"$pod\"} )",
+              "refId": "A"
+            }
+          ]
+        },
+
+        {
+          "type": "text",
+          "title": "Notes",
+          "gridPos": { "x": 0, "y": 64, "w": 24, "h": 4 },
+          "options": {
+            "content": "This dashboard joins cloudflared metrics with kube_pod_info to attribute pods to nodes. Ensure kube-state-metrics is installed and scraped. Use the Namespace/Node/Pod filters above to compare performance across nodes."
+          }
+        }
+      ]
+    }
