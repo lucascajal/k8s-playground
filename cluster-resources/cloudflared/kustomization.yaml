@@ -5,6 +5,8 @@ kind: Kustomization
 resources:
   - deployment.yaml
   - externalsecret.yaml
+  - podmonitor.yaml
+  - grafana-dashboard.yaml
 
 # Generate config
 configMapGenerator:
