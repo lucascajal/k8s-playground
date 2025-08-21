@@ -9,3 +9,4 @@ resources:
   - newsreaders.yaml
   - photography-web.yaml
   - surf-alert.yaml
+  - raspotify.yaml
