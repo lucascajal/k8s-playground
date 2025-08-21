@@ -14,3 +14,13 @@ spec:
             name: photography-web-service
             port:
               number: 5000
+  - host: lucascajal.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name: photography-web-service
+            port:
+              number: 5000
