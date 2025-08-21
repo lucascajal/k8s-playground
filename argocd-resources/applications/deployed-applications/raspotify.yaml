@@ -1,0 +1,30 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: raspotify
+  annotations:
+    argocd.argoproj.io/sync-wave: "140"
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: in-cluster
+  template:
+    metadata:
+      name: raspotify
+    spec:
+      destination:
+        name: "{{cluster}}"
+        namespace: raspotify
+      project: personal
+      source:
+        path: k8s
+        repoURL: https://github.com/lucascajal/raspotify-docker.git
+        targetRevision: HEAD
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - CreateNamespace=true
