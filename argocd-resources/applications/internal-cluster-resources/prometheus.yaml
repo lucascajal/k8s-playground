@@ -40,9 +40,61 @@ spec:
                   - action: labeldrop
                     regex: (container_id|container_image|container_image_id|image|pod_uid)
 
-            # Disable Alertmanager to save RAM/CPU.
             alertmanager:
-              enabled: false
+              alertmanagerSpec:
+                tolerations:
+                  - key: "architecture"
+                    operator: "Equal"
+                    value: "armv7"
+                    effect: "NoSchedule"
+                affinity:
+                  nodeAffinity:
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                      nodeSelectorTerms:
+                        - matchExpressions:
+                            - key: kubernetes.io/hostname
+                              operator: In
+                              values:
+                                - raspberrypi
+                # resources:
+                #   requests:
+                #     cpu: 100m
+                #     memory: 128Mi
+                #   limits:
+                #     cpu: 500m
+                #     memory: 512Mi
+
+            kube-state-metrics:
+              tolerations:
+                - key: "architecture"
+                  operator: "Equal"
+                  value: "armv7"
+                  effect: "NoSchedule"
+              affinity:
+                nodeAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    nodeSelectorTerms:
+                      - matchExpressions:
+                          - key: kubernetes.io/hostname
+                            operator: In
+                            values:
+                              - raspberrypi
+
+            prometheusOperator:
+              tolerations:
+                - key: "architecture"
+                  operator: "Equal"
+                  value: "armv7"
+                  effect: "NoSchedule"
+              affinity:
+                nodeAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    nodeSelectorTerms:
+                      - matchExpressions:
+                          - key: kubernetes.io/hostname
+                            operator: In
+                            values:
+                              - raspberrypi
 
             prometheus:
               # ingress:
@@ -78,6 +130,20 @@ spec:
                 limits:
                   cpu: 300m
                   memory: 384Mi
+              tolerations:
+                - key: "architecture"
+                  operator: "Equal"
+                  value: "armv7"
+                  effect: "NoSchedule"
+              affinity:
+                nodeAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    nodeSelectorTerms:
+                      - matchExpressions:
+                          - key: kubernetes.io/hostname
+                            operator: In
+                            values:
+                              - raspberrypi
 
               # Disable features that add overhead.
               imageRenderer:
@@ -96,7 +162,7 @@ spec:
               grafana.ini:
                 # Reduce query pressure and background work.
                 dashboards:
-                  min_refresh_interval: 30s
+                  min_refresh_interval: 60s # matches scrapeInterval in Prometheus
                 analytics:
                   reporting_enabled: false
                   check_for_updates: false
