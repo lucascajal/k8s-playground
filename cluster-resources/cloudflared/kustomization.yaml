@@ -8,6 +8,7 @@ resources:
   - podmonitor.yaml
   - grafana-dashboard.yaml
   - grafana-dashboard-advanced.yaml
+  - vpa.yaml
 
 # Generate config
 configMapGenerator:
