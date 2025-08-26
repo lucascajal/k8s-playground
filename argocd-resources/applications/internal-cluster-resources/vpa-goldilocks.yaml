@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: vpa-fairwinds
+  name: vpa-fairwinds-goldilocks
   annotations:
     argocd.argoproj.io/sync-wave: "70"
 spec:
@@ -12,36 +12,30 @@ spec:
           - cluster: in-cluster
   template:
     metadata:
-      name: vpa-fairwinds
+      name: vpa-fairwinds-goldilocks
     spec:
       destination:
         name: "{{cluster}}"
-        namespace: vpa
+        namespace: vpa-goldilocks
       project: default
       sources:
-      - chart: vpa
+      - chart: goldilocks
         repoURL: https://charts.fairwinds.com/stable
-        targetRevision: "4.8.1"
+        targetRevision: 10.1.0
         helm:
-          releaseName: my-vpa
+          releaseName: goldilocks
           values: |
-            updater:
+            dashboard:
               enabled: false
-
-            admissionController:
-              enabled: false
-
-            recommender:
-              podMonitor:
+              replicaCount: 1
+              ingress:
                 enabled: true
-
-              extraArgs:
-                pod-recommendation-min-cpu-millicores: 10
-                pod-recommendation-min-memory-mb: 20
-                v: "4"
-                # prometheus-address: |
-                #   http://prometheus-operator-prometheus.prometheus-system.svc.cluster.local:9090
-                # storage: prometheus
+                ingressClassName: nginx
+                hosts:
+                  - host: goldilocks.lucascajal.com
+                    paths:
+                      - path: /
+                        type: ImplementationSpecific
       syncPolicy:
         automated:
           selfHeal: true

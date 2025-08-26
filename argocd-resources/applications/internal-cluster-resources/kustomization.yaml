@@ -13,3 +13,4 @@ resources:
   # - oauth2-proxy.yaml
   - metrics-server.yaml
   - vpa-fairwinds.yaml
+  - vpa-goldilocks.yaml

@@ -16,7 +16,7 @@ spec:
     spec:
       destination:
         name: "{{cluster}}"
-        namespace: default
+        namespace: migration-helper
       project: personal
       source:
         path: apps/migration-helper
@@ -28,3 +28,6 @@ spec:
           prune: true
         syncOptions:
           - CreateNamespace=true
+        managedNamespaceMetadata:
+          labels:
+            goldilocks.fairwinds.com/enabled: "true"

@@ -58,5 +58,8 @@ spec:
           selfHeal: true
           prune: true
         syncOptions:
-          - CreateNamespace=true
           # - Replace=true
+          - CreateNamespace=true
+        managedNamespaceMetadata:
+          labels:
+            goldilocks.fairwinds.com/enabled: "true"
