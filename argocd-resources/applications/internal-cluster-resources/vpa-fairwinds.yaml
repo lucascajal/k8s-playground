@@ -1,0 +1,50 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: vpa-fairwinds
+  annotations:
+    argocd.argoproj.io/sync-wave: "70"
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: in-cluster
+  template:
+    metadata:
+      name: vpa-fairwinds
+    spec:
+      destination:
+        name: "{{cluster}}"
+        namespace: vpa
+      project: default
+      sources:
+      - chart: vpa
+        repoURL: https://charts.fairwinds.com/stable
+        targetRevision: "4.8.1"
+        helm:
+          releaseName: my-vpa
+          values: |
+            updater:
+              enabled: false
+
+            admissionController:
+              enabled: false
+
+            recommender:
+              podMonitor:
+                enabled: true
+
+              extraArgs:
+                pod-recommendation-min-cpu-millicores: 10
+                pod-recommendation-min-memory-mb: 20
+                v: "4"
+                # prometheus-address: |
+                #   http://prometheus-operator-prometheus.prometheus-system.svc.cluster.local:9090
+                # storage: prometheus
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - CreateNamespace=true

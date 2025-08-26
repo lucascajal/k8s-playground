@@ -12,3 +12,4 @@ resources:
   - prometheus.yaml
   # - oauth2-proxy.yaml
   - metrics-server.yaml
+  - vpa-fairwinds.yaml
