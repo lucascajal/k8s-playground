@@ -3,6 +3,7 @@ kind: Ingress
 metadata:
   name: newsreaders-frontend-ingress
 spec:
+  ingressClassName: nginx
   rules:
   - host: newsreader.lucascajal.com
     http:

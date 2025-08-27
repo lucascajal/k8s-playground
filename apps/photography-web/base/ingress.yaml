@@ -3,6 +3,7 @@ kind: Ingress
 metadata:
   name: photography-web-ingress
 spec:
+  ingressClassName: nginx
   rules:
   - host: photography.lucascajal.com
     http:
