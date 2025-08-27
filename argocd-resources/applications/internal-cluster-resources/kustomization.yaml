@@ -14,4 +14,3 @@ resources:
   - kyverno.yaml
   - metrics-server.yaml
   - vpa-fairwinds.yaml
-  - vpa-goldilocks.yaml

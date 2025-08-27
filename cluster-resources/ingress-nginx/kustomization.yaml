@@ -61,19 +61,6 @@ patches:
               value: "armv7"
               effect: "NoSchedule"
 
-  - target: # Add fairwinds VPA label
-      kind: Namespace
-      name: ingress-nginx
-    patch: |-
-      apiVersion: v1
-      kind: Namespace
-      metadata:
-        name: ingress-nginx
-        labels:
-          app.kubernetes.io/instance: ingress-nginx
-          app.kubernetes.io/name: ingress-nginx
-          goldilocks.fairwinds.com/enabled: "true"
-
   # Fix for missing jobs after they complete due to the ttlSecondsAfterFinished: 0
   # Option 1: Use hooks (actually removes them using ArgoCD, but runs on every sync op)
   - target:

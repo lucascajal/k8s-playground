@@ -18,14 +18,17 @@ spec:
         name: "{{cluster}}"
         namespace: kyverno
       project: default
-      source:
-        chart: kyverno
+      sources:
+      - chart: kyverno
         repoURL: https://kyverno.github.io/kyverno
         targetRevision: 3.5.2
         helm:
           values: |
             webhookLabels:
               app.kubernetes.io/managed-by: argocd
+      - path: cluster-resources/kyverno
+        repoURL: https://github.com/lucascajal/k8s-playground.git
+        targetRevision: HEAD
       syncPolicy:
         automated:
           prune: true
