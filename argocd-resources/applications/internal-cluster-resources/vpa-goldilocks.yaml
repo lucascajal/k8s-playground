@@ -36,6 +36,9 @@ spec:
                     paths:
                       - path: /
                         type: ImplementationSpecific
+      # - path: cluster-resources/vpa-goldilocks
+      #   repoURL: https://github.com/lucascajal/k8s-playground.git
+      #   targetRevision: HEAD
       syncPolicy:
         automated:
           selfHeal: true

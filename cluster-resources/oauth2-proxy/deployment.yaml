@@ -73,3 +73,8 @@ spec:
           requests:
             cpu: 100m
             memory: 128Mi
+      tolerations: # For taint architecture=armv7:NoSchedule
+      - key: "architecture"
+        operator: "Equal"
+        value: "armv7"
+        effect: "NoSchedule"
