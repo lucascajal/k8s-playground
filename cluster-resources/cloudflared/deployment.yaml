@@ -15,6 +15,14 @@ spec:
     spec:
       imagePullSecrets:
       - name: container-registry-credentials # Secret containing the GitLab registry credentials
+      topologySpreadConstraints:
+      - maxSkew: 1
+        # minDomains: <integer> # optional
+        topologyKey: "kubernetes.io/hostname"
+        whenUnsatisfiable: DoNotSchedule # ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app: cloudflared
       containers:
       - name: cloudflared
         # image: cloudflare/cloudflared:2025.7.0
