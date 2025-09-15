@@ -47,15 +47,15 @@ spec:
                     operator: "Equal"
                     value: "armv7"
                     effect: "NoSchedule"
-                affinity:
-                  nodeAffinity:
-                    requiredDuringSchedulingIgnoredDuringExecution:
-                      nodeSelectorTerms:
-                        - matchExpressions:
-                            - key: kubernetes.io/hostname
-                              operator: In
-                              values:
-                                - raspberrypi
+                # affinity:
+                #   nodeAffinity:
+                #     requiredDuringSchedulingIgnoredDuringExecution:
+                #       nodeSelectorTerms:
+                #         - matchExpressions:
+                #             - key: kubernetes.io/hostname
+                #               operator: In
+                #               values:
+                #                 - raspberrypi
                 # resources:
                 #   requests:
                 #     cpu: 100m
@@ -70,15 +70,15 @@ spec:
                   operator: "Equal"
                   value: "armv7"
                   effect: "NoSchedule"
-              affinity:
-                nodeAffinity:
-                  requiredDuringSchedulingIgnoredDuringExecution:
-                    nodeSelectorTerms:
-                      - matchExpressions:
-                          - key: kubernetes.io/hostname
-                            operator: In
-                            values:
-                              - raspberrypi
+              # affinity:
+              #   nodeAffinity:
+              #     requiredDuringSchedulingIgnoredDuringExecution:
+              #       nodeSelectorTerms:
+              #         - matchExpressions:
+              #             - key: kubernetes.io/hostname
+              #               operator: In
+              #               values:
+              #                 - raspberrypi
 
             prometheusOperator:
               tolerations:
@@ -86,15 +86,15 @@ spec:
                   operator: "Equal"
                   value: "armv7"
                   effect: "NoSchedule"
-              affinity:
-                nodeAffinity:
-                  requiredDuringSchedulingIgnoredDuringExecution:
-                    nodeSelectorTerms:
-                      - matchExpressions:
-                          - key: kubernetes.io/hostname
-                            operator: In
-                            values:
-                              - raspberrypi
+              # affinity:
+              #   nodeAffinity:
+              #     requiredDuringSchedulingIgnoredDuringExecution:
+              #       nodeSelectorTerms:
+              #         - matchExpressions:
+              #             - key: kubernetes.io/hostname
+              #               operator: In
+              #               values:
+              #                 - raspberrypi
 
             prometheus:
               # ingress:
@@ -135,15 +135,15 @@ spec:
                   operator: "Equal"
                   value: "armv7"
                   effect: "NoSchedule"
-              affinity:
-                nodeAffinity:
-                  requiredDuringSchedulingIgnoredDuringExecution:
-                    nodeSelectorTerms:
-                      - matchExpressions:
-                          - key: kubernetes.io/hostname
-                            operator: In
-                            values:
-                              - raspberrypi
+              # affinity:
+              #   nodeAffinity:
+              #     requiredDuringSchedulingIgnoredDuringExecution:
+              #       nodeSelectorTerms:
+              #         - matchExpressions:
+              #             - key: kubernetes.io/hostname
+              #               operator: In
+              #               values:
+              #                 - raspberrypi
 
               # Disable features that add overhead.
               imageRenderer:
