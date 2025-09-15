@@ -35,6 +35,15 @@ spec:
                   port: 443
                   targetPort: https
 
+            # Adjust probes timmings to avoid issues with slow nodes
+            livenessProbe:
+              periodSeconds: 30
+              failureThreshold: 10
+            readinessProbe:
+              initialDelaySeconds: 60
+              periodSeconds: 30
+              failureThreshold: 10
+
             # Create the APIService object
             apiService:
               create: true
