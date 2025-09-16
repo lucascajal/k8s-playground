@@ -29,11 +29,11 @@ spec:
         - run
         resources:
           requests:
-            cpu: "50m"
-            memory: "60Mi"
+            cpu: "25m"
+            memory: "50Mi"
           limits:
             cpu: "50m"
-            memory: "60Mi"
+            memory: "90Mi"
         ports:
         - name: metrics-port
           containerPort: 2000

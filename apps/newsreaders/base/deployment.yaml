@@ -24,6 +24,13 @@ spec:
           value: "80"
         ports:
         - containerPort: 5000
+        resources:
+          requests:
+            cpu: "15m"
+            memory: "35Mi"
+          limits:
+            cpu: "50m"
+            memory: "100Mi"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -53,6 +60,13 @@ spec:
           value: "info"
         ports:
         - containerPort: 80
+        resources:
+          requests:
+            cpu: "15m"
+            memory: "140Mi"
+          limits:
+            cpu: "80m"
+            memory: "200Mi"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -71,3 +85,10 @@ spec:
       containers:
       - name: newsreaders-redis
         image: redis:7.2-alpine
+        resources:
+          requests:
+            cpu: "10m"
+            memory: "10Mi"
+          limits:
+            cpu: "40m"
+            memory: "40Mi"

@@ -33,11 +33,11 @@ patches:
               - name: controller
                 resources:
                   requests:
-                    cpu: "30m"
-                    memory: "60Mi"
+                    cpu: "15m"
+                    memory: "75Mi"
                   limits:
-                    cpu: "200m"
-                    memory: "256Mi"
+                    cpu: "50m"
+                    memory: "200Mi"
 
   - target: # Add fairwinds VPA label
       kind: Namespace

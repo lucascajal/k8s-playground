@@ -36,6 +36,15 @@ spec:
                     paths:
                       - path: /
                         type: ImplementationSpecific
+
+            controller:
+              resources:
+                limits:
+                  cpu: 15m
+                  memory: 80Mi
+                requests:
+                  cpu: 15m
+                  memory: 50Mi
       syncPolicy:
         automated:
           selfHeal: true

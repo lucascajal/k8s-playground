@@ -42,6 +42,14 @@ spec:
                 # prometheus-address: |
                 #   http://prometheus-operator-prometheus.prometheus-system.svc.cluster.local:9090
                 # storage: prometheus
+
+              resources:
+                limits:
+                  cpu: 25m
+                  memory: 100Mi
+                requests:
+                  cpu: 15m
+                  memory: 65Mi
       syncPolicy:
         automated:
           selfHeal: true

@@ -24,9 +24,36 @@ spec:
           targetRevision: v1.17.0
           helm:
             releaseName: cert-manager
-            parameters:
-              - name: crds.enabled
-                value: "true"
+            values: |
+              crds:
+                enabled: true
+
+              resources:
+                requests:
+                  cpu: 15m
+                  memory: 50Mi
+                limits:
+                  cpu: 40m
+                  memory: 100Mi
+
+              cainjector:
+                resources:
+                  requests:
+                    cpu: 15m
+                    memory: 75Mi
+                  limits:
+                    cpu: 40m
+                    memory: 150Mi
+
+              webhook:
+                resources:
+                  requests:
+                    cpu: 15m
+                    memory: 35Mi
+                  limits:
+                    cpu: 40m
+                    memory: 80Mi
+
         - path: cluster-resources/cert-manager
           repoURL: https://github.com/lucascajal/k8s-playground.git
           targetRevision: HEAD

@@ -19,3 +19,10 @@ spec:
         image: registry.gitlab.com/lucascajal1/k8s/photography-web:2.1.0
         ports:
         - containerPort: 5000
+        resources:
+          requests:
+            cpu: "15m"
+            memory: "50Mi"
+          limits:
+            cpu: "100m"
+            memory: "200Mi"
