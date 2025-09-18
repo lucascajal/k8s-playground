@@ -9,7 +9,7 @@ resources:
   - cloudflared.yaml
   - external-secrets.yaml
   - ingress.yaml
-  - prometheus.yaml
+  # - prometheus.yaml
   # - oauth2-proxy.yaml
   - metrics-server.yaml
   - vpa-fairwinds.yaml
