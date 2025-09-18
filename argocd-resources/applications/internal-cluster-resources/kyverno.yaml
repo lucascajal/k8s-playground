@@ -1,0 +1,38 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: kyverno
+  annotations:
+    argocd.argoproj.io/compare-options: ServerSideDiff=true,IncludeMutationWebhook=true
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: in-cluster
+  template:
+    metadata:
+      name: kyverno
+    spec:
+      destination:
+        name: "{{cluster}}"
+        namespace: kyverno
+      project: default
+      sources:
+      - chart: kyverno
+        repoURL: https://kyverno.github.io/kyverno
+        targetRevision: 3.5.2
+        helm:
+          values: |
+            webhookLabels:
+              app.kubernetes.io/managed-by: argocd
+      - path: cluster-resources/kyverno
+        repoURL: https://github.com/lucascajal/k8s-playground.git
+        targetRevision: HEAD
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true

@@ -217,6 +217,3 @@ spec:
           # - Replace=true
           - ServerSideApply=true
           - CreateNamespace=true
-        managedNamespaceMetadata:
-          labels:
-            goldilocks.fairwinds.com/enabled: "true"

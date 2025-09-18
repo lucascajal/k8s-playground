@@ -11,6 +11,6 @@ resources:
   - ingress.yaml
   # - prometheus.yaml
   # - oauth2-proxy.yaml
+  - kyverno.yaml
   - metrics-server.yaml
   - vpa-fairwinds.yaml
-  - vpa-goldilocks.yaml

@@ -1,0 +1,70 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: generate-vpa-for-workloads
+spec:
+  generateExisting: true
+  rules:
+    - name: generate-vpa
+      match:
+        any:
+          - resources:
+              kinds:
+                - Deployment
+                - StatefulSet
+                - DaemonSet
+      generate:
+        kind: VerticalPodAutoscaler
+        apiVersion: autoscaling.k8s.io/v1
+        name: "{{request.object.metadata.name}}-vpa"
+        namespace: "{{request.object.metadata.namespace}}"
+        synchronize: true
+        data:
+          metadata:
+            ownerReferences:
+              - apiVersion: "{{request.object.apiVersion}}"
+                kind: "{{request.object.kind}}"
+                name: "{{request.object.metadata.name}}"
+                uid: "{{request.object.metadata.uid}}"
+                controller: false
+                blockOwnerDeletion: false
+          spec:
+            targetRef:
+              apiVersion: "{{request.object.apiVersion}}"
+              kind: "{{request.object.kind}}"
+              name: "{{request.object.metadata.name}}"
+            updatePolicy:
+              updateMode: "Off" # Recreate
+    - name: generate-vpa-restricted-ns
+      match:
+        any:
+          - resources:
+              kinds:
+                - Deployment
+                - StatefulSet
+                - DaemonSet
+              namespaces:
+                - kube-system
+                - kyverno
+      generate:
+        kind: VerticalPodAutoscaler
+        apiVersion: autoscaling.k8s.io/v1
+        name: "{{request.object.metadata.name}}-vpa"
+        namespace: "{{request.object.metadata.namespace}}"
+        synchronize: true
+        data:
+          metadata:
+            ownerReferences:
+              - apiVersion: "{{request.object.apiVersion}}"
+                kind: "{{request.object.kind}}"
+                name: "{{request.object.metadata.name}}"
+                uid: "{{request.object.metadata.uid}}"
+                controller: false
+                blockOwnerDeletion: false
+          spec:
+            targetRef:
+              apiVersion: "{{request.object.apiVersion}}"
+              kind: "{{request.object.kind}}"
+              name: "{{request.object.metadata.name}}"
+            updatePolicy:
+              updateMode: "Off" # Recreate
