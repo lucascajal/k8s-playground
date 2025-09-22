@@ -11,6 +11,8 @@ spec:
   destinations:
   - namespace: '*'
     server: '*'
+  orphanedResources:
+    warn: false # Disable warning
   sourceRepos:
   - https://github.com/lucascajal/k8s-playground.git
   - https://kubernetes.github.io/dashboard/
