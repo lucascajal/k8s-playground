@@ -1,0 +1,46 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: descheduler
+  annotations:
+    argocd.argoproj.io/compare-options: ServerSideDiff=true,IncludeMutationWebhook=true
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: in-cluster
+  template:
+    metadata:
+      name: descheduler
+    spec:
+      destination:
+        name: "{{cluster}}"
+        namespace: descheduler
+      project: default
+      sources:
+      - chart: descheduler
+        repoURL: https://kubernetes-sigs.github.io/descheduler
+        targetRevision: 0.33.0
+        helm:
+          values: |
+            schedule: "*/15 * * * *"
+
+            resources:
+              requests:
+                cpu: 40m
+                memory: 100Mi
+              limits:
+                cpu: 40m
+                memory: 100Mi
+            
+            livenessProbe:
+              failureThreshold: 4
+              initialDelaySeconds: 10
+              periodSeconds: 20
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
