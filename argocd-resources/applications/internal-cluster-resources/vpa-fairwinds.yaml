@@ -32,8 +32,8 @@ spec:
               enabled: false
 
             recommender:
-              podMonitor:
-                enabled: true
+              # podMonitor:
+              #   enabled: true # Only if prometheus is installed in the cluster
 
               extraArgs:
                 pod-recommendation-min-cpu-millicores: 10
