@@ -12,6 +12,8 @@ spec:
       labels:
         app: newsreaders-frontend
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: raspberrypi5
       imagePullSecrets:
       - name: container-registry-credentials # Secret containing the GitLab registry credentials
       containers:
@@ -46,6 +48,8 @@ spec:
       labels:
         app: newsreaders-backend
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: raspberrypi5
       imagePullSecrets:
       - name: container-registry-credentials # Secret containing the GitLab registry credentials
       containers:
