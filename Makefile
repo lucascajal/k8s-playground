@@ -17,7 +17,7 @@ help: ## Display this help
 k8s_distribution ?= k3s
 
 K3S_KUBE_CONFIG ?= $(CURDIR)/k3s_kubeconfig.yaml
-K3S_VERSION := v1.33.3+k3s1
+K3S_VERSION := v1.35.0+k3s1
 
 # Select cluster implementation based on k8s_distribution
 ifeq ($(k8s_distribution),k3s)
