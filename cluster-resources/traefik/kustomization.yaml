@@ -7,6 +7,7 @@ resources:
   - externalsecret.yaml
   - middleware.yaml
   - ingressroute.yaml
+  - httproute.yaml
 # - secretprovider.yaml
 # - namespace.yaml
 
