@@ -19,3 +19,4 @@ data:
     - email
     # not strictly necessary - but good practice:
     - 'http://lucascajal.com/groups'
+  kustomize.buildOptions: --enable-helm
