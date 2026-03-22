@@ -25,6 +25,10 @@ auth0_argocd_client_secret      = "<auth0-argocd-client-secret>"
 argocd_github_repos_base_url    = "<argocd-github-repos-base-url>"
 argocd_github_repos_read_token  = "<argocd-github-repos-read>"
 
+# Traefik dashboard vars
+auth0_traefik_client_id     = "<auth0-traefik-client-id>"
+auth0_traefik_client_secret = "<auth0-traefik-client-secret>"
+
 # Prometheus & Grafana vars
 auth0_grafana_client_id     = "<auth0-grafana-client-id>"
 auth0_grafana_client_secret = "<auth0-grafana-client-secret>"

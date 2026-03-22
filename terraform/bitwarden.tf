@@ -105,6 +105,30 @@ resource "bitwarden_secret" "argocd_repository_read_creds" {
   })
 }
 
+# Traefik dashboard vars
+resource "random_password" "traefik_oidc_session_secret" {
+  length  = 32
+  special = false
+}
+resource "bitwarden_secret" "auth0_traefik_client_id" {
+  key        = "traefik-clientID"
+  value      = var.auth0_traefik_client_id
+  project_id = data.bitwarden_project.k8s_cluster_tf.id
+  note       = "Auth0 clientID for Traefik dashboard"
+}
+resource "bitwarden_secret" "auth0_traefik_client_secret" {
+  key        = "traefik-clientSecret"
+  value      = var.auth0_traefik_client_secret
+  project_id = data.bitwarden_project.k8s_cluster_tf.id
+  note       = "Auth0 clientSecret for Traefik dashboard"
+}
+resource "bitwarden_secret" "traefik_oidc_session_secret" {
+  key        = "traefik-oidc-session-secret"
+  value      = random_password.traefik_oidc_session_secret.result
+  project_id = data.bitwarden_project.k8s_cluster_tf.id
+  note       = "Session encryption secret for the Traefik OIDC plugin. Auto-generated, exactly 32 characters."
+}
+
 # Prometheus & Grafana vars
 resource "bitwarden_secret" "auth0_grafana_client_id" {
   key        = "grafana-clientID"

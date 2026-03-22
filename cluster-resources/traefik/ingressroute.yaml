@@ -1,0 +1,23 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-dashboard
+  namespace: traefik
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`traefik.lucascajal.com`)
+      kind: Rule
+      services:
+        - name: dashboard@internal
+          kind: TraefikService
+      middlewares:
+        - name: oidc-auth
+    - match: Host(`traefik.lucascajal.com`) && (PathPrefix(`/api`) || PathPrefix(`/oidc/callback`))
+      kind: Rule
+      services:
+        - name: api@internal
+          kind: TraefikService
+      middlewares:
+        - name: oidc-auth

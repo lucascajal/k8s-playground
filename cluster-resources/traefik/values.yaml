@@ -1,0 +1,65 @@
+service:
+  type: ClusterIP
+
+deployment:
+  replicas: 2
+
+resources:
+  requests:
+    cpu: "50m"
+    memory: "100Mi"
+  limits:
+    cpu: "200m"
+    memory: "200Mi"
+
+topologySpreadConstraints:
+  # Forces the scheduler to put traefik pods on nodes where no other traefik pods are scheduled.
+  - labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: '{{ template "traefik.name" . }}'
+    maxSkew: 1
+    topologyKey: kubernetes.io/hostname
+    whenUnsatisfiable: DoNotSchedule
+
+# tolerations:
+#   - key: "architecture"
+#     operator: "Equal"
+#     value: "armv7"
+#     effect: "NoSchedule"
+
+experimental:
+  plugins:
+    traefik-oidc-auth:
+      moduleName: github.com/sevensolutions/traefik-oidc-auth
+      version: v0.18.0
+
+ingressRoute:
+  dashboard:
+    enabled: false
+
+# Enable Gateway API Provider & Disables the KubernetesIngress provider
+# Providers tell Traefik where to find routing configuration.
+providers:
+  kubernetesCRD:
+    enabled: true
+  kubernetesIngress:
+    enabled: false
+  kubernetesGateway:
+    enabled: true
+gateway:
+  listeners:
+    web:
+      namespacePolicy:
+        from: All
+
+# Enable Observability
+logs:
+  general:
+    level: INFO
+  # This enables access logs, outputting them to Traefik's standard output by default. The [Access Logs Documentation](https://doc.traefik.io/traefik/observability/access-logs/) covers formatting, filtering, and output options.
+  access:
+    enabled: true
+
+# Enables Prometheus for Metrics
+metrics:
+  prometheus: null

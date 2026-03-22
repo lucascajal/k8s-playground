@@ -1,0 +1,15 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: oidc-auth
+  namespace: traefik
+spec:
+  plugin:
+    traefik-oidc-auth:
+      LogLevel: INFO
+      Secret: "urn:k8s:secret:traefik-oidc-secret:SESSION_SECRET"
+      Provider:
+        Url: "https://lucascajal.eu.auth0.com/"
+        ClientId: "urn:k8s:secret:traefik-oidc-secret:CLIENT_ID"
+        ClientSecret: "urn:k8s:secret:traefik-oidc-secret:CLIENT_SECRET"
+        UsePkce: true

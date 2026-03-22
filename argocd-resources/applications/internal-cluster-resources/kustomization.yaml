@@ -15,3 +15,4 @@ resources:
   - metrics-server.yaml
   - vpa-fairwinds.yaml
   - descheduler.yaml
+  - traefik.yaml

@@ -18,21 +18,24 @@ no-autoupdate: true
 # from the internet to cloudflared, run `cloudflared tunnel route dns <tunnel> <hostname>`.
 # E.g. `cloudflared tunnel route dns example-tunnel tunnel.example.com`.
 ingress:
-# This rule sends traffic to the built-in hello-world HTTP server. This can help debug connectivity
-# issues. If hello.example.com resolves and tunnel.example.com does not, then the problem is
-# in the connection from cloudflared to your local service, not from the internet to cloudflared.
-# - hostname: hello.example.com
-#   service: hello_world
+  # This rule sends traffic to the built-in hello-world HTTP server. This can help debug connectivity
+  # issues. If hello.example.com resolves and tunnel.example.com does not, then the problem is
+  # in the connection from cloudflared to your local service, not from the internet to cloudflared.
+  # - hostname: hello.example.com
+  #   service: hello_world
 
-# Send traffic to the kubernetes API server
-- hostname: k8s-api.lucascajal.com
-  service: https://kubernetes.default.svc
-  originRequest:
-    noTLSVerify: true
+  # Send traffic to the kubernetes API server
+  - hostname: k8s-api.lucascajal.com
+    service: https://kubernetes.default.svc
+    originRequest:
+      noTLSVerify: true
 
-# Send all subdomains to ingress controller.
-# - hostname: "*.lucascajal.com"
-- service: http://ingress-nginx-controller.ingress-nginx
+  - hostname: traefik.lucascajal.com
+    service: http://traefik.traefik
+
+  # Send all subdomains to ingress controller.
+  # - hostname: "*.lucascajal.com"
+  - service: http://ingress-nginx-controller.ingress-nginx
 # - service: ingress-nginx-controller.ingress-nginx
 
 # This rule matches any traffic which didn't match a previous rule, and responds with HTTP 404.

@@ -89,6 +89,18 @@ variable "argocd_github_repos_read_token" {
   sensitive   = true
 }
 
+# Traefik dashboard vars
+variable "auth0_traefik_client_id" {
+  description = "Auth0 client ID for Traefik dashboard"
+  type        = string
+  sensitive   = true
+}
+variable "auth0_traefik_client_secret" {
+  description = "Auth0 client secret for Traefik dashboard"
+  type        = string
+  sensitive   = true
+}
+
 # Prometheus & Grafana vars
 variable "auth0_grafana_client_id" {
   description = "Auth0 client ID for Grafana"
