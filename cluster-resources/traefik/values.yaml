@@ -33,6 +33,14 @@ experimental:
       moduleName: github.com/sevensolutions/traefik-oidc-auth
       version: v0.18.0
 
+api:
+  insecure: true
+
+ports:
+  traefik:
+    expose:
+      default: true
+
 ingressRoute:
   dashboard:
     enabled: false

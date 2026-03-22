@@ -33,6 +33,9 @@ ingress:
   - hostname: traefik.lucascajal.com
     service: http://traefik.traefik
 
+  - hostname: traefik-gwapi.lucascajal.com
+    service: http://traefik.traefik
+
   # Send all subdomains to ingress controller.
   # - hostname: "*.lucascajal.com"
   - service: http://ingress-nginx-controller.ingress-nginx
