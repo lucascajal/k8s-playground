@@ -1,62 +1,115 @@
-# Kubernetes playground and examples
-This repository serves as my personal kubernetes learning journal. It contains examples and tests for testing & playing with kuberentes, using kind. It evolves as new concepts are learned and tested.
+# Kubernetes homelab
 
-The final picture should end up looking similar to the [🚀 ArgoCD Self-Managed Example](https://github.com/imjoseangel/k8s-gitops) repository, which is a core reference for this learning journey, and [it's maintainer](https://github.com/imjoseangel) a k8s mentor of mine. Big kudos to him.
+Personal homelab Kubernetes cluster running on Raspberry Pi, managed with GitOps via ArgoCD. It evolved from a simple learning experiment into a self-managing cluster with full secrets management, SSO, TLS, and observability.
+
+The setup is heavily inspired by the [ArgoCD Self-Managed Example](https://github.com/imjoseangel/k8s-gitops) repository, and its [maintainer](https://github.com/imjoseangel) has been a great k8s mentor.
+
+## Architecture
+
+### Stack
+
+| Layer | Component |
+|---|---|
+| Kubernetes distribution | K3S (default) |
+| GitOps | ArgoCD (self-managing) |
+| Ingress | NGINX ingress controller + Traefik |
+| TLS | cert-manager + Let's Encrypt (ACME via Cloudflare DNS challenge) |
+| Secrets | Bitwarden Secrets Manager + External Secrets Operator |
+| Tunnel | Cloudflared (no open ports needed) |
+| Auth | Auth0 OIDC |
+| Policy | Kyverno |
+| Observability | Prometheus + Grafana |
+| Autoscaling | VPA (Fairwinds), descheduler |
+| Infrastructure (external) | Terraform — Cloudflare tunnel, DNS records, Bitwarden secrets backup |
+
+### Network topology
+
+![Network topology](doc/network-topology.png)
+
+## Requirements
+
+### CLI tools
+
+- [terraform](https://developer.hashicorp.com/terraform/install#linux)
+- [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
+- `jq`
+- `make`
+
+### External accounts and services
+
+| Service | What it's used for |
+|---|---|
+| [Cloudflare](https://cloudflare.com) | Domain DNS + tunnel |
+| [Bitwarden Secrets Manager](https://bitwarden.com/products/secrets-manager/) | Secrets storage (access token + project ID needed) |
+| [Auth0](https://auth0.com) | OIDC provider |
+| [GitLab container registry](https://docs.gitlab.com/user/packages/container_registry/) | Private app images — GitLab offers unlimited free storage for private registries |
+| GitHub (PAT) | ArgoCD private repo read access |
 
 ## Usage
-### Requirements
-Install these CLI tools:
-- [kind](https://kind.sigs.k8s.io/docs/user/quick-start)
-- [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
-- [Helm](https://helm.sh/docs/intro/install/)
-- cloudflared - following https://developers.cloudflare.com/cloudflare-one/tutorials/many-cfd-one-tunnel/
 
-Register in an OIDC provider (we used Auth0) and register an app. Copy the [oidc-secret-example.env](oauth2-proxy/oidc-secret-example.env) file as `oidc-secret.env` in the same directory, put your app's `CLIENT_ID` and `CLIENT_SECRET` in it, and generate the value for `COOKIE_SECRET` with
-```bash
-dd if=/dev/urandom bs=32 count=1 2>/dev/null | base64 | tr -d -- '\n' | tr -- '+/' '-_' ; echo
-```
-To also use Auth0 for the ArgoCD UI, copy the the file [`argocd-cm-example.yaml`](./argocd/patches/argocd-cm-example.yaml) to a new file `argocd-cm.yaml` in the same directory and populate it with your Auth0 app's values.
+### Setup
 
-Finally, create a Cloudflare account and register a domain. Log in to cloudflare by executing the command below and following the instructions:
+Copy the Terraform vars example and fill in all values:
+
 ```bash
-sudo cloudflared tunnel login
+cp terraform/terraform.tfvars.example terraform/terraform.tfvars
+# edit terraform/terraform.tfvars with your values
 ```
-> The `cloudflared` tunnel is an easy and secure way to expose your cluster to the internet without having to configure your home router and open ports.
+
 ### Cluster creation
+
 ```bash
 sudo make cluster
 ```
->If the command fails, with a message saying `The kubelet is unhealthy due to a misconfiguration of the node in some way (required cgroups disabled)`, run
->```bash
->sudo nano /boot/firmware/cmdline.txt
->```
->and add these options at the start of the line:
->```bash
->cgroup_enable=memory cgroup_memory=1
->```
->Then, reboot your system with `sudo reboot`. [Read more details](https://ubuntu.com/tutorials/how-to-kubernetes-cluster-on-raspberry-pi#4-installing-microk8s) on this.
 
+This runs three phases in sequence:
 
-This will:
-- Create a kind cluster
-- Set up NGINX ingress controller
-- Create `dev`, `uat` and `prod` namespaces
-- Set up tunnel:
-    - Create a Cloudflared tunnel
-    - Add DNS records to cloudflare pointing to the tunnel
-    - Create cloudflared image deployment
-    - Foward all traffic from tunnel to the ingress controller
-- Create [OAuth2 Proxy](https://oauth2-proxy.github.io/oauth2-proxy/) deployment pointing to your OIDC app
-- Create [Kubernetes Dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/) deployment secured with OIDC
+1. **K3S install** — installs K3S on the local machine with OIDC and other flags configured in `cluster-k3s-config.yaml`
+2. **Terraform** — creates the Cloudflare tunnel, wildcard DNS records, and stores all secrets as a backup in Bitwarden; also creates the `bitwarden-access-token` secret in the cluster so External Secrets can read from Bitwarden
+3. **ArgoCD bootstrap** — installs ArgoCD and applies `argocd-resources/`, which triggers ArgoCD to self-manage and sync all cluster components and applications automatically
 
-At this point, you should be able to access the Kubernetes dashboard at dashboard.example.com, with your OIDC provider authentication as the login.
+After the cluster is ready, copy the kubeconfig:
 
-Enjoy your kind cluster! 🧑‍💻
+```bash
+cat ./k3s_kubeconfig.yaml > ~/.kube/config
+```
+
+> If the command fails with `The kubelet is unhealthy due to a misconfiguration of the node in some way (required cgroups disabled)`, run
+>
+> ```bash
+> sudo nano /boot/firmware/cmdline.txt
+> ```
+>
+> and add these options at the start of the line:
+>
+> ```
+> cgroup_enable=memory cgroup_memory=1
+> ```
+>
+> Then reboot with `sudo reboot`. [Read more](https://ubuntu.com/tutorials/how-to-kubernetes-cluster-on-raspberry-pi#4-installing-microk8s).
+
+### Multi-node setup
+
+To add an agent node to the cluster, run this on the server node to get the join command:
+
+```bash
+make print_node_join_cmd
+```
+
+Then run the printed command on the agent node.
+
+> **Different CPU architectures**: If you add a node with a different architecture (e.g., `armv7` for an older Raspberry Pi), taint it so incompatible workloads are not scheduled there:
+>
+> ```bash
+> kubectl taint nodes <node-name> architecture=armv7:NoSchedule
+> ```
+>
+> Workloads that can run on that node need to add the corresponding toleration. See the Helm values under `cluster-resources/` for examples.
 
 ### Cluster deletion
+
 ```bash
 make destroy
 ```
-## Architecture
-### Network topology
-![Network topology](doc/network-topology.png)
+
+This destroys the K3S cluster and then runs `terraform destroy` to remove the Cloudflare tunnel and DNS records.

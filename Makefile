@@ -53,12 +53,19 @@ cluster_k3s: ## Creates K3s Cluster. Following https://docs.k3s.io/quick-start
 		--write-kubeconfig $(K3S_KUBE_CONFIG) \
 		--write-kubeconfig-mode 644 \
 		--config $(CURDIR)/cluster-k3s-config.yaml
-	# cat ./k3s_kubeconfig.yaml > ~/.kube/config
-	# To add new nodes: sudo cat /var/lib/rancher/k3s/server/node-token
-	# 	curl -sfL https://get.k3s.io | \
-	# 		INSTALL_K3S_VERSION=$(K3S_VERSION) \
-	# 		K3S_URL=https://192.168.1.140:6443 \
-	# 		K3S_TOKEN=<token> sh -
+	@echo ""
+	@echo "Next steps:"
+	@echo "  cat ./k3s_kubeconfig.yaml > ~/.kube/config"
+	@echo ""
+	@echo "To print the command to join a new node, run:"
+	@echo "  make print_node_join_cmd"
+
+.PHONY: print_node_join_cmd
+print_node_join_cmd: ## Print the full command to join a new node to the k3s cluster
+	@echo "curl -sfL https://get.k3s.io | \\"
+	@echo "  INSTALL_K3S_VERSION=$(K3S_VERSION) \\"
+	@echo "  K3S_URL=https://$$(hostname -I | awk '{print $$1}'):6443 \\"
+	@echo "  K3S_TOKEN=$$(sudo cat /var/lib/rancher/k3s/server/node-token) sh -"
 
 .PHONY: destroy_k3s
 destroy_k3s: ## Destroys K3s Cluster. https://docs.k3s.io/installation/uninstall
