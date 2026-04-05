@@ -1,6 +1,6 @@
 # API server certificate SANs (omit 0.0.0.0; it’s not useful as a SAN)
 tls-san:
-  - raspberrypi5.local
+  - pi5-1.local
   - 127.0.0.1
   - k8s-api.lucascajal.com
   - 192.168.1.140 # Local IP of server node so agents can join

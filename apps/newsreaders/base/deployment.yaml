@@ -13,26 +13,26 @@ spec:
         app: newsreaders-frontend
     spec:
       nodeSelector:
-        kubernetes.io/hostname: raspberrypi5
+        kubernetes.io/hostname: pi5-1
       imagePullSecrets:
-      - name: container-registry-credentials # Secret containing the GitLab registry credentials
+        - name: container-registry-credentials # Secret containing the GitLab registry credentials
       containers:
-      - name: newsreaders-frontend
-        image: registry.gitlab.com/lucascajal1/k8s/newsreaders-frontend:latest
-        env:
-        - name: API_HOST
-          value: "http://newsreaders-backend-service"
-        - name: API_PORT
-          value: "80"
-        ports:
-        - containerPort: 5000
-        resources:
-          requests:
-            cpu: "15m"
-            memory: "35Mi"
-          limits:
-            cpu: "50m"
-            memory: "100Mi"
+        - name: newsreaders-frontend
+          image: registry.gitlab.com/lucascajal1/k8s/newsreaders-frontend:latest
+          env:
+            - name: API_HOST
+              value: "http://newsreaders-backend-service"
+            - name: API_PORT
+              value: "80"
+          ports:
+            - containerPort: 5000
+          resources:
+            requests:
+              cpu: "15m"
+              memory: "35Mi"
+            limits:
+              cpu: "50m"
+              memory: "100Mi"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -49,28 +49,28 @@ spec:
         app: newsreaders-backend
     spec:
       nodeSelector:
-        kubernetes.io/hostname: raspberrypi5
+        kubernetes.io/hostname: pi5-1
       imagePullSecrets:
-      - name: container-registry-credentials # Secret containing the GitLab registry credentials
+        - name: container-registry-credentials # Secret containing the GitLab registry credentials
       containers:
-      - name: newsreaders-backend
-        image: registry.gitlab.com/lucascajal1/k8s/newsreaders-backend:latest
-        env:
-        - name: REDIS_HOST
-          value: "newsreaders-redis-service"
-        - name: REDIS_PORT
-          value: "6379"
-        - name: LOG_LEVEL
-          value: "info"
-        ports:
-        - containerPort: 80
-        resources:
-          requests:
-            cpu: "15m"
-            memory: "140Mi"
-          limits:
-            cpu: "80m"
-            memory: "200Mi"
+        - name: newsreaders-backend
+          image: registry.gitlab.com/lucascajal1/k8s/newsreaders-backend:latest
+          env:
+            - name: REDIS_HOST
+              value: "newsreaders-redis-service"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: LOG_LEVEL
+              value: "info"
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: "15m"
+              memory: "140Mi"
+            limits:
+              cpu: "80m"
+              memory: "200Mi"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -87,12 +87,12 @@ spec:
         app: newsreaders-redis
     spec:
       containers:
-      - name: newsreaders-redis
-        image: redis:7.2-alpine
-        resources:
-          requests:
-            cpu: "10m"
-            memory: "10Mi"
-          limits:
-            cpu: "40m"
-            memory: "40Mi"
+        - name: newsreaders-redis
+          image: redis:7.2-alpine
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "10Mi"
+            limits:
+              cpu: "40m"
+              memory: "40Mi"
