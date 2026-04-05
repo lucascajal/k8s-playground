@@ -9,8 +9,20 @@ resource "bitwarden_secret" "bitwarden_token" {
   project_id = data.bitwarden_project.k8s_cluster_tf.id
   note       = "Access token for the Bitwarden API"
 }
+resource "bitwarden_secret" "bitwarden_project_id" {
+  key        = "bitwarden-project-id"
+  value      = var.bitwarden_project_id
+  project_id = data.bitwarden_project.k8s_cluster_tf.id
+  note       = "Bitwarden project ID for the k8s cluster Terraform project"
+}
 
 # Cloudflare
+resource "bitwarden_secret" "cloudflare_domain" {
+  key        = "cloudflare-domain"
+  value      = var.cloudflare_domain
+  project_id = data.bitwarden_project.k8s_cluster_tf.id
+  note       = "Base domain name managed in Cloudflare"
+}
 resource "bitwarden_secret" "tunnel_credentials" {
   key = "cloudflared-tunnel-credentials"
   value = jsonencode({
@@ -79,6 +91,24 @@ resource "bitwarden_secret" "container_registry_creds" {
     }
   })
 }
+resource "bitwarden_secret" "registry_url" {
+  key        = "container-registry-url"
+  value      = var.registry_url
+  project_id = data.bitwarden_project.k8s_cluster_tf.id
+  note       = "Container registry URL (raw input variable)"
+}
+resource "bitwarden_secret" "registry_username" {
+  key        = "container-registry-username"
+  value      = var.registry_username
+  project_id = data.bitwarden_project.k8s_cluster_tf.id
+  note       = "Container registry username (raw input variable)"
+}
+resource "bitwarden_secret" "registry_password" {
+  key        = "container-registry-password"
+  value      = var.registry_password
+  project_id = data.bitwarden_project.k8s_cluster_tf.id
+  note       = "Container registry password / token (raw input variable)"
+}
 
 # ArgoCD vars
 resource "bitwarden_secret" "auth0_argocd_client_id" {
@@ -103,6 +133,18 @@ resource "bitwarden_secret" "argocd_repository_read_creds" {
     "username" = "argocd-readonly",
     "password" = var.argocd_github_repos_read_token
   })
+}
+resource "bitwarden_secret" "argocd_github_repos_base_url" {
+  key        = "argocd-github-repos-base-url"
+  value      = var.argocd_github_repos_base_url
+  project_id = data.bitwarden_project.k8s_cluster_tf.id
+  note       = "GitHub repositories URL prefix for ArgoCD private repo read template (raw input variable)"
+}
+resource "bitwarden_secret" "argocd_github_repos_read_token" {
+  key        = "argocd-github-repos-read-token"
+  value      = var.argocd_github_repos_read_token
+  project_id = data.bitwarden_project.k8s_cluster_tf.id
+  note       = "GitHub token for ArgoCD private repo read access (raw input variable)"
 }
 
 # Traefik dashboard vars
