@@ -19,14 +19,6 @@ provider "cloudflare" {
 }
 
 provider "bitwarden" {
-  access_token = var.bitwarden_token
-
-  # If you have the opportunity, you can try out the embedded client which
-  # removes the need for a locally installed Bitwarden CLI. Please note that
-  # this feature is still considered experimental and not recommended for
-  # production use.
-  #
-  experimental {
-    embedded_client = true
-  }
+  access_token          = var.bitwarden_token
+  client_implementation = "embedded"
 }
