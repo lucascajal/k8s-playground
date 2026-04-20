@@ -26,7 +26,7 @@ patches:
       metadata:
         name: ingress-nginx-controller
       spec:
-        replicas: 4
+        replicas: 6
         template:
           spec:
             topologySpreadConstraints:
