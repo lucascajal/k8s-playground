@@ -35,9 +35,13 @@ spec:
                 memory: 100Mi
             
             livenessProbe:
-              failureThreshold: 4
-              initialDelaySeconds: 10
+              # failureThreshold: 4
+              # initialDelaySeconds: 10
+              # periodSeconds: 20
+              initialDelaySeconds: 30      # Give app time to boot
               periodSeconds: 20
+              timeoutSeconds: 10           # Allow longer for slow responses
+              failureThreshold: 4
       syncPolicy:
         automated:
           prune: true
