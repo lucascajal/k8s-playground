@@ -38,10 +38,10 @@ spec:
               # failureThreshold: 4
               # initialDelaySeconds: 10
               # periodSeconds: 20
-              initialDelaySeconds: 30      # Give app time to boot
-              periodSeconds: 20
-              timeoutSeconds: 10           # Allow longer for slow responses
-              failureThreshold: 4
+              initialDelaySeconds: 60      # Wait longer before first check
+              periodSeconds: 30
+              timeoutSeconds: 15           # Give it 15s to respond (increase from default 5s)
+              failureThreshold: 5          # Allow more failures before killing
       syncPolicy:
         automated:
           prune: true
