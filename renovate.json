@@ -9,7 +9,7 @@
     {
       "customType": "regex",
       "managerFilePatterns": [
-        "/argocd-resources/applications/**/*.yaml/"
+        "argocd-resources/applications/**/*.yaml"
       ],
       "matchStrings": [
         "- chart: (?<depName>[^\\s]+)\\s+repoURL: (?<registryUrl>https://[^\\s]+)\\s+targetRevision: \"?(?<currentValue>[^\"\\s]+)\"?"
@@ -19,7 +19,7 @@
     {
       "customType": "regex",
       "managerFilePatterns": [
-        "/argocd/base/kustomization.yaml/"
+        "argocd/base/kustomization.yaml"
       ],
       "matchStrings": [
         "https://raw\\.githubusercontent\\.com/(?<depName>[^/]+/[^/]+)/refs/tags/(?<currentValue>v[^/]+)/"
