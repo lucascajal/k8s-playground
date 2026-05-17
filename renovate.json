@@ -1,0 +1,51 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "commitMessagePrefix": "📌 (bot)",
+  "prHourlyLimit": 5,
+  "prConcurrentLimit": 5,
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "argocd-resources/applications/**/*.yaml"
+      ],
+      "matchStrings": [
+        "- chart: (?<depName>[^\\s]+)\\s+repoURL: (?<registryUrl>https://[^\\s]+)\\s+targetRevision: \"?(?<currentValue>[^\"\\s]+)\"?"
+      ],
+      "datasourceTemplate": "helm"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "argocd/base/kustomization.yaml"
+      ],
+      "matchStrings": [
+        "https://raw\\.githubusercontent\\.com/(?<depName>[^/]+/[^/]+)/refs/tags/(?<currentValue>v[^/]+)/"
+      ],
+      "datasourceTemplate": "github-releases"
+    }
+  ],
+  "packageRules": [
+    {
+      "matchManagers": [
+        "github-actions"
+      ],
+      "groupName": "GitHub Actions"
+    },
+    {
+      "matchManagers": [
+        "terraform"
+      ],
+      "groupName": "Terraform providers"
+    },
+    {
+      "matchFileNames": [
+        "cluster-resources/traefik/**"
+      ],
+      "groupName": "Traefik"
+    }
+  ]
+}
