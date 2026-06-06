@@ -6,12 +6,28 @@ metadata:
   namespace: argocd
 spec:
   clusterResourceWhitelist:
-  - group: '*'
-    kind: '*'
+    - group: "*"
+      kind: "*"
   destinations:
-  - namespace: '*'
-    server: '*'
+    - namespace: "*"
+      server: "*"
+  orphanedResources:
+    warn: true
+    ignore:
+      # Auto-created by Kubernetes in every namespace
+      - group: ""
+        kind: "ConfigMap"
+        name: "kube-root-ca.crt"
+      - group: ""
+        kind: "ServiceAccount"
+        name: "default"
+      # Auto-created by VPA recommender
+      - group: "autoscaling.k8s.io"
+        kind: "VerticalPodAutoscalerCheckpoint"
+      # Leader election leases created by controllers
+      - group: "coordination.k8s.io"
+        kind: "Lease"
   sourceRepos:
-  - https://github.com/lucascajal/k8s-playground.git
-  - https://github.com/lucascajal/surf-alert.git
-  - https://github.com/lucascajal/raspotify-docker.git
+    - https://github.com/lucascajal/k8s-playground.git
+    - https://github.com/lucascajal/surf-alert.git
+    - https://github.com/lucascajal/raspotify-docker.git
