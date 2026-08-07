@@ -8,6 +8,12 @@ name: Renovate
 # 3. Go to this repo → Settings → Secrets and variables → Actions → New repository secret
 #    Name: RENOVATE_TOKEN, Value: <the token you just created>
 
+# Renovate updates shared PR/branch state, so never let two runs for this repo overlap.
+# GitHub keeps one active run and coalesces queued triggers to the latest run.
+concurrency:
+  group: renovate-${{ github.repository }}
+  cancel-in-progress: false
+
 on:
   schedule:
     - cron: "0 4 * * *" # Every day at 4am
