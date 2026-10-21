@@ -118,6 +118,13 @@ Enable **Show Orphaned** in the application details to inspect unmanaged top-lev
 namespaced resources. The default AppProject already enables this monitoring;
 it does not transfer resource ownership to ArgoCD or enforce read-only access.
 
+### Resource policy
+
+Kyverno audits Pods for missing CPU and memory requests and memory limits,
+including init containers. Violations produce admission warnings and policy
+reports, but do not block workloads. System namespaces are excluded and
+LimitRange defaults are accepted. CPU limits remain optional.
+
 ### Networking replica scaling
 
 ArgoCD deploys cluster-proportional-autoscaler to scale CoreDNS, Cloudflared, and

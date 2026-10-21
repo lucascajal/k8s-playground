@@ -1,0 +1,129 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: configured
+  namespace: default
+spec:
+  containers:
+    - name: container-0
+      image: busybox:1.37
+      resources:
+        requests:
+          cpu: 25m
+          memory: 32Mi
+        limits:
+          memory: 128Mi
+  initContainers:
+    - name: init
+      image: busybox:1.37
+      resources:
+        requests:
+          cpu: 25m
+          memory: 32Mi
+        limits:
+          memory: 128Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: missing-resources
+  namespace: default
+spec:
+  containers:
+    - name: container-0
+      image: busybox:1.37
+      resources: {}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: missing-cpu-request
+  namespace: default
+spec:
+  containers:
+    - name: container-0
+      image: busybox:1.37
+      resources:
+        requests:
+          memory: 32Mi
+        limits:
+          memory: 128Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: missing-memory-request
+  namespace: default
+spec:
+  containers:
+    - name: container-0
+      image: busybox:1.37
+      resources:
+        requests:
+          cpu: 25m
+        limits:
+          memory: 128Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: missing-memory-limit
+  namespace: default
+spec:
+  containers:
+    - name: container-0
+      image: busybox:1.37
+      resources:
+        requests:
+          cpu: 25m
+          memory: 32Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: missing-sidecar-resources
+  namespace: default
+spec:
+  containers:
+    - name: container-0
+      image: busybox:1.37
+      resources:
+        requests:
+          cpu: 25m
+          memory: 32Mi
+        limits:
+          memory: 128Mi
+    - name: container-1
+      image: busybox:1.37
+      resources: {}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: missing-init-resources
+  namespace: default
+spec:
+  containers:
+    - name: container-0
+      image: busybox:1.37
+      resources:
+        requests:
+          cpu: 25m
+          memory: 32Mi
+        limits:
+          memory: 128Mi
+  initContainers:
+    - name: init
+      image: busybox:1.37
+      resources: {}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: excluded-system-pod
+  namespace: kube-system
+spec:
+  containers:
+    - name: container-0
+      image: busybox:1.37
+      resources: {}

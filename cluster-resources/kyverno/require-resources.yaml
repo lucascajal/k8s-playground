@@ -1,0 +1,44 @@
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-container-resources
+  annotations:
+    pod-policies.kyverno.io/autogen-controllers: none
+spec:
+  validationFailureAction: Audit
+  emitWarning: true
+  background: true
+  rules:
+    - name: require-requests-and-memory-limit
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      exclude:
+        any:
+          - resources:
+              namespaces:
+                - kube-system
+                - kyverno
+                - kube-public
+                - kube-node-lease
+      validate:
+        message: All containers and init containers must have CPU and memory requests and a memory limit.
+        pattern:
+          spec:
+            containers:
+              - resources:
+                  requests:
+                    cpu: "?*"
+                    memory: "?*"
+                  limits:
+                    memory: "?*"
+            =(initContainers):
+              - resources:
+                  requests:
+                    cpu: "?*"
+                    memory: "?*"
+                  limits:
+                    memory: "?*"
