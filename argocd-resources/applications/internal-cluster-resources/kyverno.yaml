@@ -3,8 +3,6 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: kyverno
-  annotations:
-    argocd.argoproj.io/compare-options: ServerSideDiff=true,IncludeMutationWebhook=true
 spec:
   generators:
     - list:
@@ -13,6 +11,8 @@ spec:
   template:
     metadata:
       name: kyverno
+      annotations:
+        argocd.argoproj.io/compare-options: ServerSideDiff=true,IncludeMutationWebhook=true
     spec:
       destination:
         name: "{{cluster}}"
