@@ -106,6 +106,18 @@ Then run the printed command on the agent node.
 >
 > Workloads that can run on that node need to add the corresponding toleration. See the Helm values under `cluster-resources/` for examples.
 
+### kube-system resource defaults and visibility
+
+The `kube-system` ArgoCD application manages a LimitRange that supplies missing
+container requests and memory limits. CPU limits are intentionally not defaulted.
+Explicit values are preserved; defaults apply when new pods are created, including
+init containers. Existing pods are unchanged. K3S continues to manage CoreDNS and
+local-path-provisioner.
+
+Enable **Show Orphaned** in the application details to inspect unmanaged top-level
+namespaced resources. The default AppProject already enables this monitoring;
+it does not transfer resource ownership to ArgoCD or enforce read-only access.
+
 ### Cluster deletion
 
 ```bash

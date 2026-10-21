@@ -1,0 +1,30 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: kube-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "60"
+spec:
+  syncPolicy:
+    preserveResourcesOnDeletion: true
+  generators:
+    - list:
+        elements:
+          - cluster: in-cluster
+  template:
+    metadata:
+      name: kube-system
+    spec:
+      destination:
+        name: "{{cluster}}"
+        namespace: kube-system
+      project: default
+      source:
+        path: cluster-resources/kube-system
+        repoURL: https://github.com/lucascajal/k8s-playground.git
+        targetRevision: HEAD
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true

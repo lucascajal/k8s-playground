@@ -12,6 +12,7 @@ resources:
   # - prometheus.yaml
   # - oauth2-proxy.yaml
   - kyverno.yaml
+  - kube-system.yaml
   - metrics-server.yaml
   - vpa-fairwinds.yaml
   - descheduler.yaml
