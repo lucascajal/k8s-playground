@@ -120,10 +120,11 @@ it does not transfer resource ownership to ArgoCD or enforce read-only access.
 
 ### Resource policy
 
-Kyverno audits Pods for missing CPU and memory requests and memory limits,
-including init containers. Violations produce admission warnings and policy
-reports, but do not block workloads. System namespaces are excluded and
-LimitRange defaults are accepted. CPU limits remain optional.
+Kyverno rejects new Pods missing CPU or memory requests or memory limits,
+including in init containers. Existing Pods are not stopped, and violations
+remain visible in policy reports. System namespaces are excluded and LimitRange
+defaults are accepted. Missing CPU limits produce admission warnings and audit
+reports, but do not block Pods.
 
 ### Networking replica scaling
 

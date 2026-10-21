@@ -1,0 +1,38 @@
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: audit-container-cpu-limits
+  annotations:
+    pod-policies.kyverno.io/autogen-controllers: none
+spec:
+  validationFailureAction: Audit
+  emitWarning: true
+  background: true
+  rules:
+    - name: check-cpu-limits
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      exclude:
+        any:
+          - resources:
+              namespaces:
+                - kube-system
+                - kyverno
+                - kube-public
+                - kube-node-lease
+      validate:
+        message: CPU limits are missing from one or more containers or init containers; this is an audit warning and does not block the Pod.
+        pattern:
+          spec:
+            containers:
+              - resources:
+                  limits:
+                    cpu: "?*"
+            =(initContainers):
+              - resources:
+                  limits:
+                    cpu: "?*"

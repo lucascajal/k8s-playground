@@ -6,8 +6,7 @@ metadata:
   annotations:
     pod-policies.kyverno.io/autogen-controllers: none
 spec:
-  validationFailureAction: Audit
-  emitWarning: true
+  validationFailureAction: Enforce
   background: true
   rules:
     - name: require-requests-and-memory-limit

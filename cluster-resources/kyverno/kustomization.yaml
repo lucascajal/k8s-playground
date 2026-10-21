@@ -4,5 +4,6 @@ kind: Kustomization
 
 resources:
   - policies/generate-vpa.yaml
+  - policies/audit-cpu-limits.yaml
   - policies/require-container-resources.yaml
   - rbac/generate-vpa.yaml

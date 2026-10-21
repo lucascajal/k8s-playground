@@ -1,0 +1,109 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: configured
+  namespace: default
+spec:
+  containers:
+    - name: container-0
+      image: busybox:1.37
+      resources:
+        requests:
+          cpu: 25m
+          memory: 32Mi
+        limits:
+          memory: 128Mi
+          cpu: 50m
+  initContainers:
+    - name: init
+      image: busybox:1.37
+      resources:
+        requests:
+          cpu: 25m
+          memory: 32Mi
+        limits:
+          memory: 128Mi
+          cpu: 50m
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: missing-cpu-limit
+  namespace: default
+spec:
+  containers:
+    - name: container-0
+      image: busybox:1.37
+      resources:
+        requests:
+          cpu: 25m
+          memory: 32Mi
+        limits:
+          memory: 128Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: missing-sidecar-cpu-limit
+  namespace: default
+spec:
+  containers:
+    - name: container-0
+      image: busybox:1.37
+      resources:
+        requests:
+          cpu: 25m
+          memory: 32Mi
+        limits:
+          memory: 128Mi
+          cpu: 50m
+    - name: container-1
+      image: busybox:1.37
+      resources:
+        requests:
+          cpu: 25m
+          memory: 32Mi
+        limits:
+          memory: 128Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: missing-init-cpu-limit
+  namespace: default
+spec:
+  containers:
+    - name: container-0
+      image: busybox:1.37
+      resources:
+        requests:
+          cpu: 25m
+          memory: 32Mi
+        limits:
+          memory: 128Mi
+          cpu: 50m
+  initContainers:
+    - name: init
+      image: busybox:1.37
+      resources:
+        requests:
+          cpu: 25m
+          memory: 32Mi
+        limits:
+          memory: 128Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: excluded-system-pod
+  namespace: kube-system
+spec:
+  containers:
+    - name: container-0
+      image: busybox:1.37
+      resources:
+        requests:
+          cpu: 25m
+          memory: 32Mi
+        limits:
+          memory: 128Mi
