@@ -1,0 +1,65 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: cluster-proportional-autoscaler
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: in-cluster
+            name: coredns-autoscaler
+            namespace: kube-system
+            target: deployment/coredns
+            nodeLabels: "kubernetes.io/arch: arm64"
+            nodesPerReplica: "1"
+            minReplicas: "2"
+          - cluster: in-cluster
+            name: cloudflared-autoscaler
+            namespace: tunnel-cloudflared
+            target: deployment/cloudflared
+            nodeLabels: "kubernetes.io/os: linux"
+            nodesPerReplica: "1"
+            minReplicas: "2"
+          - cluster: in-cluster
+            name: ingress-nginx-autoscaler
+            namespace: ingress-nginx
+            target: deployment/ingress-nginx-controller
+            nodeLabels: "kubernetes.io/os: linux"
+            nodesPerReplica: "1"
+            minReplicas: "2"
+  template:
+    metadata:
+      name: "{{name}}"
+    spec:
+      destination:
+        name: "{{cluster}}"
+        namespace: "{{namespace}}"
+      project: default
+      sources:
+        - chart: cluster-proportional-autoscaler
+          repoURL: https://kubernetes-sigs.github.io/cluster-proportional-autoscaler
+          targetRevision: "1.1.0"
+          helm:
+            values: |
+              options:
+                target: "{{target}}"
+                nodeLabels:
+                  {{nodeLabels}}
+              config:
+                linear:
+                  nodesPerReplica: {{nodesPerReplica}}
+                  min: {{minReplicas}}
+                  includeUnschedulableNodes: true
+              resources:
+                requests:
+                  cpu: 25m
+                  memory: 32Mi
+                limits:
+                  memory: 128Mi
+      syncPolicy:
+        automated:
+          selfHeal: true
+          prune: true
+        syncOptions:
+          - CreateNamespace=true

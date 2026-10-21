@@ -7,7 +7,6 @@ spec:
   selector:
     matchLabels:
       app: cloudflared
-  replicas: 6 # You could also consider elastic scaling for this deployment
   template:
     metadata:
       labels:

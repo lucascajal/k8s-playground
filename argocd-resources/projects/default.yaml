@@ -62,3 +62,4 @@ spec:
     - https://charts.fairwinds.com/stable # vpa via fairwinds
     - https://kyverno.github.io/kyverno
     - https://kubernetes-sigs.github.io/descheduler
+    - https://kubernetes-sigs.github.io/cluster-proportional-autoscaler

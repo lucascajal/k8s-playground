@@ -24,9 +24,16 @@ spec:
         path: cluster-resources/cloudflared
         repoURL: https://github.com/lucascajal/k8s-playground.git
         targetRevision: HEAD
+      ignoreDifferences:
+        - group: apps
+          kind: Deployment
+          name: cloudflared
+          jsonPointers:
+            - /spec/replicas
       syncPolicy:
         automated:
           selfHeal: true
           prune: true
         syncOptions:
           - CreateNamespace=true
+          - RespectIgnoreDifferences=true

@@ -118,6 +118,15 @@ Enable **Show Orphaned** in the application details to inspect unmanaged top-lev
 namespaced resources. The default AppProject already enables this monitoring;
 it does not transfer resource ownership to ArgoCD or enforce read-only access.
 
+### Networking replica scaling
+
+ArgoCD deploys cluster-proportional-autoscaler to scale CoreDNS, Cloudflared, and
+NGINX ingress with cluster size, keeping at least two replicas spread across nodes.
+K3S continues to manage CoreDNS; ArgoCD leaves replica counts to the autoscalers.
+
+Additional workloads can be configured in
+`argocd-resources/applications/internal-cluster-resources/cluster-proportional-autoscaler.yaml`.
+
 ### Cluster deletion
 
 ```bash
