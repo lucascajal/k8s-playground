@@ -3,7 +3,7 @@ kind: Test
 metadata:
   name: require-container-resources
 policies:
-  - ../../require-resources.yaml
+  - ../../policies/require-container-resources.yaml
 resources:
   - pods.yaml
 results:
